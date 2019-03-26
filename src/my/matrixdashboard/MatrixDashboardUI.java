@@ -6,6 +6,7 @@
 package my.matrixdashboard;
 
 import java.util.*;
+import javax.swing.*;
 
 /**
  *
@@ -16,6 +17,11 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     static MatrixDashboardUI mdui;
     Database db;
     ArrayList<Project> projects;
+    int ncurrentproject;
+    ArrayList<AppArea> appareas;    // for current project
+    int ncurrentapparea;
+    ArrayList<AppFunc> appfuncs;    // for current project+apparea
+    int ncurrentappfunc;
     
     /**
      * Creates new form MatrixDashboardUI
@@ -33,17 +39,17 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jAppAreaComboBox1 = new javax.swing.JComboBox<>();
+        jAppAreasComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jMainTable1 = new javax.swing.JTable();
         jProjectsComboBox1 = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jAppAreaComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AppArea 1", "AppArea 2", "AppArea 3", "AppArea 4" }));
-        jAppAreaComboBox1.addActionListener(new java.awt.event.ActionListener() {
+        jAppAreasComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "AppArea 1", "AppArea 2", "AppArea 3", "AppArea 4" }));
+        jAppAreasComboBox1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jAppAreaComboBox1ActionPerformed(evt);
+                jAppAreasComboBox1ActionPerformed(evt);
             }
         });
 
@@ -57,10 +63,35 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, true, true
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jMainTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jMainTable1);
+        if (jMainTable1.getColumnModel().getColumnCount() > 0) {
+            jMainTable1.getColumnModel().getColumn(0).setResizable(false);
+            jMainTable1.getColumnModel().getColumn(1).setResizable(false);
+            jMainTable1.getColumnModel().getColumn(2).setResizable(false);
+            jMainTable1.getColumnModel().getColumn(3).setResizable(false);
+        }
 
         jProjectsComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Project 1", "Project 2", "Project 3", "Project 4" }));
+        jProjectsComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jProjectsComboBox1ActionPerformed(evt);
+            }
+        });
+        jProjectsComboBox1.addPropertyChangeListener(new java.beans.PropertyChangeListener() {
+            public void propertyChange(java.beans.PropertyChangeEvent evt) {
+                jProjectsComboBox1PropertyChange(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -74,14 +105,14 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                 .addGap(28, 28, 28)
                 .addComponent(jProjectsComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
-                .addComponent(jAppAreaComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jAppAreasComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jAppAreaComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jAppAreasComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jProjectsComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -91,41 +122,206 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jAppAreaComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAppAreaComboBox1ActionPerformed
+    private void jAppAreasComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAppAreasComboBox1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jAppAreaComboBox1ActionPerformed
+        //System.out.println("jAppAreasComboBox1ActionPerformed: called, evt == " + evt);        
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        String selected = (String)(comboBox.getSelectedItem());
+        System.out.println("jAppAreasComboBox1ActionPerformed: " + selected);
+
+        for (int i=0 ; i<appareas.size() ; i++) {
+            if (appareas.get(i).name.equals(selected)) {
+                if (i != ncurrentapparea)
+                    changeselectedapparea(i);
+                return;
+            }
+        }
+        System.out.println("jAppAreasComboBox1ActionPerformed: combobox selected apparea not in list");
+    }//GEN-LAST:event_jAppAreasComboBox1ActionPerformed
+
+    private void jProjectsComboBox1PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jProjectsComboBox1PropertyChange
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jProjectsComboBox1PropertyChange
+
+    private void jProjectsComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jProjectsComboBox1ActionPerformed
+
+        //System.out.println("jProjectsComboBox1ActionPerformed: called, evt == " + evt);
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        String selected = (String)(comboBox.getSelectedItem());
+        System.out.println("jProjectsComboBox1ActionPerformed: " + selected);
+
+        for (int i=0 ; i<projects.size() ; i++) {
+            if (projects.get(i).name.equals(selected)) {
+                if (i != ncurrentproject)
+                    changeselectedproject(i);
+                return;
+            }
+        }
+        System.out.println("jProjectsComboBox1ActionPerformed: combobox selected project not in list");
+    }//GEN-LAST:event_jProjectsComboBox1ActionPerformed
 
     private void createemptydatabase(){
+        try{
+            AppFunc.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            AppArea.droptable();
+        }catch(Exception e) {
+        };
         try{
             Project.droptable();
         }catch(Exception e) {
         };
+
         try{
             Project.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            AppArea.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            AppFunc.createtable();
         }catch(Exception e) {
         };
     }                                                 
 
     private void createinitproject(){
+        
         Project pInit = new Project(1,"Init");
         try{
             pInit.writetodatabase();
         }catch(Exception e) {
         };
-        for (int i=2 ; i<10 ; i++) {
-            pInit = new Project(i,"proj"+i);
-            pInit.writetodatabase();
+        int nextid = 2;
+        for ( ; nextid<4 ; nextid++) {
+            Project p = new Project(nextid,"proj"+nextid);
+            p.writetodatabase();
         }
+
+        try{
+            this.projects = Project.getallprojects();
+        }catch(Exception e) {
+        };
+        ncurrentproject = 0;
+       
+        int nextaaid = 1;
+        for (Project project : projects) {
+            AppArea aaStandard = new AppArea(nextaaid++, project.id, "Standard" + project.id);
+            try{
+                aaStandard.writetodatabase();
+            }catch(Exception e) {
+            };
+            AppArea aaCustom1 = new AppArea(nextaaid++, project.id, "Custom" + project.id);
+            try{
+                aaCustom1.writetodatabase();
+            }catch(Exception e) {
+            };
+        }
+
+        try{
+            this.appareas = AppArea.getallappareas(this.projects.get(ncurrentproject).id);
+        }catch(Exception e) {
+        };
+        ncurrentapparea = 0;
+       
+        int nextafid = 1;
+        for (Project project : projects) {
+            ArrayList<AppArea> appareas = new ArrayList<AppArea>();    // for project
+            AppFunc af;
+            try{
+                appareas = AppArea.getallappareas(project.id);
+            }catch(Exception e) {
+            };
+            for (AppArea apparea : appareas) {
+                af = new AppFunc(nextafid++, project.id, apparea.id, "Login" + project.id + apparea.id);
+                try{
+                    af.writetodatabase();
+                }catch(Exception e) {
+                };
+                af = new AppFunc(nextafid++, project.id, apparea.id, "Logout" + project.id + apparea.id);
+                try{
+                    af.writetodatabase();
+                }catch(Exception e) {
+                };
+                af = new AppFunc(nextafid++, project.id, apparea.id, "PW Change" + project.id + apparea.id);
+                try{
+                    af.writetodatabase();
+                }catch(Exception e) {
+                };
+                af = new AppFunc(nextafid++, project.id, apparea.id, "PW Reset" + project.id + apparea.id);
+                try{
+                    af.writetodatabase();
+                }catch(Exception e) {
+                };
+            }
+           }
     }                                
     
-    private void setprojectscomboboxcontents(){
+    private void changeselectedproject(int nnewproject) {
+        ncurrentproject = nnewproject;
+        try{
+            this.appareas = AppArea.getallappareas(this.projects.get(ncurrentproject).id);
+        }catch(Exception e) {
+        };
+        setappareascomboboxcontents();
+        changeselectedapparea(0);
+    }                                
+    
+    private void changeselectedapparea(int nnewapparea) {
+        ncurrentapparea = nnewapparea;
+        try{
+            this.appfuncs = AppFunc.getallappfuncs(this.projects.get(ncurrentproject).id, this.appareas.get(ncurrentapparea).id);
+        }catch(Exception e) {
+        };
+        setmaintable();
+    }                          
+    
+    private void setprojectscomboboxcontents() {
         String[] names = new String[40];
         int i = 0;
         for(Project project : this.projects)
             names[i++] = project.name;
         jProjectsComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(names));
-        //jProjectsComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Project 1", "Project 2", "Project 3", "Project 4" }));
     }                                
+    
+    private void setappareascomboboxcontents() {
+        String[] names = new String[40];
+        int i = 0;
+        for(AppArea apparea : this.appareas)
+            names[i++] = apparea.name;
+        jAppAreasComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(names));
+    }               
+    
+    private void setmaintable() {
+        int nrows = 5;
+        int ncolumns = this.appfuncs.size();
+        
+        Object [][] contents = new Object [nrows][ncolumns];
+        String [] columnheaders = new String [ncolumns];
+        
+        for (int r=0 ; r<nrows ; r++)
+            for (int c=0 ; c<ncolumns ; c++)
+                contents[r][c] = new String("cell" + r + c);
+        for (int c=0 ; c<ncolumns ; c++)
+            columnheaders[c] = new String(this.appfuncs.get(c).name);
+        
+        jMainTable1.setModel(
+          new javax.swing.table.DefaultTableModel(
+            contents,
+            columnheaders) {
+                boolean[] canEdit = new boolean [] {
+                    false, false, false, false
+                };
+                public boolean isCellEditable(int rowIndex, int columnIndex) {
+                    return canEdit [columnIndex];
+                }
+            }
+        );
+
+    }
     
     private void start(){
         
@@ -145,6 +341,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
         */
+        
         try{
             createemptydatabase();
         }catch(Exception e) {
@@ -158,6 +355,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
         setprojectscomboboxcontents();
+        changeselectedproject(0);
     }
 
     private void stop(){
@@ -214,7 +412,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JComboBox<String> jAppAreaComboBox1;
+    private javax.swing.JComboBox<String> jAppAreasComboBox1;
     private javax.swing.JTable jMainTable1;
     private javax.swing.JComboBox<String> jProjectsComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
