@@ -22,6 +22,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     int ncurrentapparea;
     ArrayList<AppFunc> appfuncs;    // for current project+apparea
     int ncurrentappfunc;
+    ArrayList<Activity> activities;    // for current project
     
     /**
      * Creates new form MatrixDashboardUI
@@ -71,7 +72,8 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
-        });
+        }
+        );
         jMainTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jMainTable1);
         if (jMainTable1.getColumnModel().getColumnCount() > 0) {
@@ -162,6 +164,30 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
 
     private void createemptydatabase(){
         try{
+            Activity.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            Role.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            Client.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            OS.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            Browser.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            Device.droptable();
+        }catch(Exception e) {
+        };
+        try{
             AppFunc.droptable();
         }catch(Exception e) {
         };
@@ -184,6 +210,30 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         };
         try{
             AppFunc.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            Device.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            Browser.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            OS.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            Client.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            Role.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            Activity.createtable();
         }catch(Exception e) {
         };
     }                                                 
@@ -257,7 +307,109 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                 }catch(Exception e) {
                 };
             }
-           }
+        }
+
+        int nextrid = 1;
+        Role r = null;
+        r = new Role(nextrid++, "---none---");
+        try{
+            r.writetodatabase();
+        }catch(Exception e) {
+        };
+        r = new Role(nextrid++, "User");
+        try{
+            r.writetodatabase();
+        }catch(Exception e) {
+        };
+        r = new Role(nextrid++, "Admin");
+        try{
+            r.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        int nextdid = 1;
+        Device d = null;
+        d = new Device(nextdid++, "---none---");
+        try{
+            d.writetodatabase();
+        }catch(Exception e) {
+        };
+        d = new Device(nextdid++, "PC");
+        try{
+            d.writetodatabase();
+        }catch(Exception e) {
+        };
+        d = new Device(nextdid++, "Smartphone");
+        try{
+            d.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        int nextbid = 1;
+        Browser b = null;
+        b = new Browser(nextbid++, "---none---");
+        try{
+            b.writetodatabase();
+        }catch(Exception e) {
+        };
+        b = new Browser(nextbid++, "Firefox");
+        try{
+            b.writetodatabase();
+        }catch(Exception e) {
+        };
+        b = new Browser(nextbid++, "Chrome");
+        try{
+            b.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        int nextoid = 1;
+        OS o = null;
+        o = new OS(nextoid++, "---none---");
+        try{
+            o.writetodatabase();
+        }catch(Exception e) {
+        };
+        o = new OS(nextoid++, "Linux");
+        try{
+            o.writetodatabase();
+        }catch(Exception e) {
+        };
+        o = new OS(nextoid++, "Windows");
+        try{
+            o.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        int nextcid = 1;
+        Client c = null;
+        c = new Client(nextcid++, "PFL", 2, 2, 2);
+        try{
+            c.writetodatabase();
+        }catch(Exception e) {
+        };
+        c = new Client(nextcid++, "SCW", 3, 3, 3);
+        try{
+            c.writetodatabase();
+        }catch(Exception e) {
+        };
+       
+        int nextaid = 1;
+        for (Project project : projects) {
+            Activity a = null;
+            for (int i=0 ; i<10 ; i++) {
+                a = new Activity(nextaid++, project.id, "Activity" + project.id + "-" + nextaid, (i%3)+1, (i%3)+1);
+                try{
+                    a.writetodatabase();
+                }catch(Exception e) {
+                };
+            }
+        }
+
+        try{
+            this.activities = Activity.getallactivities(this.projects.get(ncurrentproject).id);
+        }catch(Exception e) {
+        };
     }                                
     
     private void changeselectedproject(int nnewproject) {
@@ -267,7 +419,13 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
         setappareascomboboxcontents();
-        changeselectedapparea(0);
+        
+        try{
+            this.activities = Activity.getallactivities(this.projects.get(ncurrentproject).id);
+        }catch(Exception e) {
+        };
+        
+        changeselectedapparea(0);   // this will redraw main table at end
     }                                
     
     private void changeselectedapparea(int nnewapparea) {
@@ -296,17 +454,24 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     }               
     
     private void setmaintable() {
-        int nrows = 5;
-        int ncolumns = this.appfuncs.size();
+        // tricky: column 0 is Activity labels
+        int nrows = this.activities.size();
+        int ncolumns = this.appfuncs.size()+1;
         
         Object [][] contents = new Object [nrows][ncolumns];
+        String [] rowheaders = new String [nrows];
         String [] columnheaders = new String [ncolumns];
         
         for (int r=0 ; r<nrows ; r++)
-            for (int c=0 ; c<ncolumns ; c++)
+            rowheaders[r] = new String(this.activities.get(r).name);
+        columnheaders[0] = new String("");
+        for (int c=1 ; c<ncolumns ; c++)
+            columnheaders[c] = new String(this.appfuncs.get(c-1).name);
+        for (int r=0 ; r<nrows ; r++)
+            contents[r][0] = new String(rowheaders[r]);
+        for (int r=0 ; r<nrows ; r++)
+            for (int c=1 ; c<ncolumns ; c++)
                 contents[r][c] = new String("cell" + r + c);
-        for (int c=0 ; c<ncolumns ; c++)
-            columnheaders[c] = new String(this.appfuncs.get(c).name);
         
         jMainTable1.setModel(
           new javax.swing.table.DefaultTableModel(
