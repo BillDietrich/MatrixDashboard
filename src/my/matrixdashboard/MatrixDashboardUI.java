@@ -7,6 +7,7 @@ package my.matrixdashboard;
 
 import java.util.*;
 import javax.swing.*;
+import java.awt.*;
 
 /**
  *
@@ -23,11 +24,16 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     ArrayList<AppFunc> appfuncs;    // for current project+apparea
     int ncurrentappfunc;
     ArrayList<Activity> activities;    // for current project
+    ArrayList<Role> roles;             // for current activities
+    ArrayList<Client> clients;         // for current activities
     
     /**
      * Creates new form MatrixDashboardUI
      */
     public MatrixDashboardUI() {
+        //setExtendedState(MAXIMIZED_BOTH);
+        setMinimumSize(new Dimension(600,300));
+        setPreferredSize(new Dimension(1000,600));
         initComponents();
     }
 
@@ -54,6 +60,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             }
         });
 
+        jMainTable1.setBorder(javax.swing.BorderFactory.createEtchedBorder());
         jMainTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -72,8 +79,8 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             public boolean isCellEditable(int rowIndex, int columnIndex) {
                 return canEdit [columnIndex];
             }
-        }
-        );
+        });
+        jMainTable1.setPreferredSize(new java.awt.Dimension(600, 400));
         jMainTable1.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jMainTable1);
         if (jMainTable1.getColumnModel().getColumnCount() > 0) {
@@ -309,27 +316,27 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             }
         }
 
-        int nextrid = 1;
+        int nextrid = Database.NONEID;
         Role r = null;
-        r = new Role(nextrid++, "---none---");
+        r = new Role(nextrid++, Database.NONENAME, Database.NONEABBREV);
         try{
             r.writetodatabase();
         }catch(Exception e) {
         };
-        r = new Role(nextrid++, "User");
+        r = new Role(nextrid++, "User", "U");
         try{
             r.writetodatabase();
         }catch(Exception e) {
         };
-        r = new Role(nextrid++, "Admin");
+        r = new Role(nextrid++, "Admin", "A");
         try{
             r.writetodatabase();
         }catch(Exception e) {
         };
 
-        int nextdid = 1;
+        int nextdid = Database.NONEID;
         Device d = null;
-        d = new Device(nextdid++, "---none---");
+        d = new Device(nextdid++, Database.NONENAME);
         try{
             d.writetodatabase();
         }catch(Exception e) {
@@ -345,9 +352,9 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
 
-        int nextbid = 1;
+        int nextbid = Database.NONEID;
         Browser b = null;
-        b = new Browser(nextbid++, "---none---");
+        b = new Browser(nextbid++, Database.NONENAME);
         try{
             b.writetodatabase();
         }catch(Exception e) {
@@ -363,9 +370,9 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
 
-        int nextoid = 1;
+        int nextoid = Database.NONEID;
         OS o = null;
-        o = new OS(nextoid++, "---none---");
+        o = new OS(nextoid++, Database.NONENAME);
         try{
             o.writetodatabase();
         }catch(Exception e) {
@@ -381,8 +388,13 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
 
-        int nextcid = 1;
+        int nextcid = Database.NONEID;
         Client c = null;
+        c = new Client(nextcid++, Database.NONENAME, 1, 1, 1);
+        try{
+            c.writetodatabase();
+        }catch(Exception e) {
+        };
         c = new Client(nextcid++, "PFL", 2, 2, 2);
         try{
             c.writetodatabase();
@@ -398,7 +410,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         for (Project project : projects) {
             Activity a = null;
             for (int i=0 ; i<10 ; i++) {
-                a = new Activity(nextaid++, project.id, "Activity" + project.id + "-" + nextaid, (i%3)+1, (i%3)+1);
+                a = new Activity(nextaid++, project.id, ("Activity" + project.id + "-" + nextaid), (i%3)+1, (i%3)+1);
                 try{
                     a.writetodatabase();
                 }catch(Exception e) {
@@ -406,10 +418,12 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             }
         }
 
+        /*
         try{
             this.activities = Activity.getallactivities(this.projects.get(ncurrentproject).id);
         }catch(Exception e) {
         };
+        */
     }                                
     
     private void changeselectedproject(int nnewproject) {
@@ -423,7 +437,27 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         try{
             this.activities = Activity.getallactivities(this.projects.get(ncurrentproject).id);
         }catch(Exception e) {
-        };
+        }
+
+        this.roles = new ArrayList<Role>();
+        this.clients = new ArrayList<Client>();
+        for (int i = 0 ; i<this.activities.size() ; i++) {
+            Activity activity = this.activities.get(i);
+            try{
+                Role r = new Role(activity.roleid);
+                r.readfromdatabase();
+                this.roles.add(r);
+            }catch(Exception e) {
+                System.out.println("changeselectedproject: role error " + e);
+            };
+            try{
+                Client c = new Client(activity.clientid);
+                c.readfromdatabase();
+                this.clients.add(c);
+            }catch(Exception e) {
+                System.out.println("changeselectedproject: client error " + e);
+            };
+        }
         
         changeselectedapparea(0);   // this will redraw main table at end
     }                                
@@ -454,37 +488,59 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     }               
     
     private void setmaintable() {
-        // tricky: column 0 is Activity labels
+        System.out.println("setmaintable: called");
+
+        // tricky:  column 0 is Activity name
+        //          column 1 is Role name
+        //          column 2 is Client name
         int nrows = this.activities.size();
-        int ncolumns = this.appfuncs.size()+1;
+        int ncolumns = this.appfuncs.size()+3;
+        System.out.println("setmaintable: nrows == " + nrows + ", ncolumns == " + ncolumns);
+        System.out.println("setmaintable: this.roles.size() == " + this.roles.size() + ", this.clients.size() == " + this.clients.size());
         
         Object [][] contents = new Object [nrows][ncolumns];
-        String [] rowheaders = new String [nrows];
         String [] columnheaders = new String [ncolumns];
         
-        for (int r=0 ; r<nrows ; r++)
-            rowheaders[r] = new String(this.activities.get(r).name);
         columnheaders[0] = new String("");
-        for (int c=1 ; c<ncolumns ; c++)
-            columnheaders[c] = new String(this.appfuncs.get(c-1).name);
+        columnheaders[1] = new String("R");
+        columnheaders[2] = new String("Client");
+        for (int c=3 ; c<ncolumns ; c++)
+            columnheaders[c] = new String(this.appfuncs.get(c-3).name);
+        for (int r=0 ; r<nrows ; r++) {
+            contents[r][0] = new String(this.activities.get(r).name);
+            String abbrev = this.roles.get(r).abbrev;
+            if (abbrev.equals(Database.NONEABBREV))
+                abbrev = "";
+            contents[r][1] = new String(abbrev);
+            String cname = this.clients.get(r).name;
+            if (cname.equals(Database.NONENAME))
+                cname = "";
+            contents[r][2] = new String(cname);
+        }
         for (int r=0 ; r<nrows ; r++)
-            contents[r][0] = new String(rowheaders[r]);
-        for (int r=0 ; r<nrows ; r++)
-            for (int c=1 ; c<ncolumns ; c++)
+            for (int c=3 ; c<ncolumns ; c++)
                 contents[r][c] = new String("cell" + r + c);
         
         jMainTable1.setModel(
           new javax.swing.table.DefaultTableModel(
             contents,
             columnheaders) {
-                boolean[] canEdit = new boolean [] {
-                    false, false, false, false
-                };
                 public boolean isCellEditable(int rowIndex, int columnIndex) {
-                    return canEdit [columnIndex];
+                    return false;
                 }
             }
         );
+
+        jScrollPane1.setPreferredSize(new java.awt.Dimension(800, 530));
+        jMainTable1.setPreferredSize(new java.awt.Dimension(800, 500));
+        jMainTable1.getColumnModel().getColumn(0).setMinWidth(100);
+        jMainTable1.getColumnModel().getColumn(1).setMinWidth(20);
+        jMainTable1.getColumnModel().getColumn(2).setMinWidth(45);
+        jMainTable1.getColumnModel().getColumn(1).setMaxWidth(20);
+        jMainTable1.getColumnModel().getColumn(2).setMaxWidth(45);
+        jMainTable1.getColumnModel().getColumn(0).setPreferredWidth(100);
+        jMainTable1.getColumnModel().getColumn(1).setPreferredWidth(20);
+        jMainTable1.getColumnModel().getColumn(2).setPreferredWidth(45);
 
     }
     

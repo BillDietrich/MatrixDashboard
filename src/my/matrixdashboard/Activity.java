@@ -81,9 +81,9 @@ public class Activity {
          String name = rs.getString("name");
          int roleid = rs.getInt("roleid");
          int clientid = rs.getInt("clientid");
-         Activity p = new Activity(id,projectid,name,roleid,clientid);
-         thelist.add(p);
-        System.out.println("Activity.getallactivities: got id == " + id + ", name '" + name + "'");
+         Activity a = new Activity(id,projectid,name,roleid,clientid);
+         thelist.add(a);
+        System.out.println("Activity.getallactivities: got id == " + id + ", name '" + name + "', roleid == " + roleid + ", clientid == " + clientid);
       }
       rs.close();
     }catch(Exception e){

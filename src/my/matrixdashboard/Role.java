@@ -17,15 +17,18 @@ public class Role {
     
    int id;
    String name;
+   String abbrev;
 
    // constructors
-   public Role(int id, String name) {
+   public Role(int id, String name, String abbrev) {
        this.id = id;
        this.name = name;
+       this.abbrev = abbrev;
    }
    public Role(int id) {
        this.id = id;
        this.name = null;
+       this.abbrev = null;
    }
    
    public static void createtable() {
@@ -36,6 +39,7 @@ public class Role {
       String sql = "CREATE TABLE roles " +
                    "(id INTEGER not NULL, " +
                    " name TEXT UNIQUE, " + 
+                   " abbrev TEXT UNIQUE, " + 
                    " PRIMARY KEY ( id ))";
 
       stmt.executeUpdate(sql);
@@ -63,9 +67,10 @@ public class Role {
       while(rs.next()){
          int id = rs.getInt("id");
          String name = rs.getString("name");
-         Role p = new Role(id,name);
-         thelist.add(p);
-        System.out.println("Role.getallroles: got id == " + id + ", name '" + name + "'");
+         String abbrev = rs.getString("abbrev");
+         Role r = new Role(id,name,abbrev);
+         thelist.add(r);
+        System.out.println("Role.getallroles: got id == " + id + ", name '" + name + "', abbrev '" + abbrev + "'");
       }
       rs.close();
     }catch(Exception e){
@@ -82,7 +87,7 @@ public class Role {
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
-      String sql = "INSERT OR REPLACE INTO roles VALUES(" + id + ",'" + name + "')";
+      String sql = "INSERT OR REPLACE INTO roles VALUES(" + id + ",'" + name + "','" + abbrev + "')";
       // write fails silently if name violates the UNIQUE constraint !!!
       stmt.executeUpdate(sql);
     }catch(Exception e){
@@ -93,16 +98,17 @@ public class Role {
    }
 
    public void readfromdatabase() {
-    System.out.println("Role.readfromdatabase: called");        
+    System.out.println("Role.readfromdatabase: called, id == " + this.id);        
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
-      String sql = "SELECT * FROM roles WHERE id=" + id;
+      String sql = "SELECT * FROM roles WHERE id=" + this.id;
       stmt.executeQuery(sql);
       ResultSet rs = stmt.executeQuery(sql);
       if (rs.next()){
          this.id = rs.getInt("id");
          this.name = rs.getString("name");
+         this.abbrev = rs.getString("abbrev");
         System.out.println("Role.readfromdatabase: got id == " + this.id + ", name '" + this.name + "'");
       } else
        System.out.println("Role.readfromdatabase: record not found");

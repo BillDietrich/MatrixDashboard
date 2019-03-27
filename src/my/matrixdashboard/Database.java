@@ -15,6 +15,9 @@ import java.util.*;
 public class Database {
 
    public static Connection conn = null;
+   public static final int NONEID = 1;
+   public static final String NONENAME = "---none---";
+   public static final String NONEABBREV = "-";
    
    public void open() {
     try{
