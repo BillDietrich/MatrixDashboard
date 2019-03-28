@@ -1,5 +1,7 @@
 # MatrixDashboard
-GUI dashboard for managing a project, aimed at managing bug-bounty hunting projects
+GUI dashboard for managing a project, aimed at managing bug-bounty hunting projects.
+
+![Main screen](https://github.com/BillDietrich/MatrixDashboard/blob/master/screenshot-main1.png)
 
 ## Status
 * FAR from usable, just started building it.
@@ -7,7 +9,9 @@ GUI dashboard for managing a project, aimed at managing bug-bounty hunting proje
 
 ## Development Environment
 * NetBeans IDE 10
+* Java
 * OpenJDK 10
 * sqlite-jdbc-3.27.2.1
 * SQLite3
 * Linux
+

@@ -1,6 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 
 <Form version="1.5" maxVersion="1.9" type="org.netbeans.modules.form.forminfo.JFrameFormInfo">
+  <NonVisualComponents>
+    <Container class="javax.swing.JPopupMenu" name="jActivityPopupMenu1">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignAbsoluteLayout">
+        <Property name="useNullLayout" type="boolean" value="true"/>
+      </Layout>
+    </Container>
+    <Component class="javax.swing.JMenuItem" name="jActivityPropertiesMenuItem1">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Properties"/>
+        <Property name="componentPopupMenu" type="javax.swing.JPopupMenu" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="jActivityPopupMenu1"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="jCloneActivityMenuItem2">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="Clone Activity"/>
+        <Property name="componentPopupMenu" type="javax.swing.JPopupMenu" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="jActivityPopupMenu1"/>
+        </Property>
+      </Properties>
+    </Component>
+    <Component class="javax.swing.JMenuItem" name="jNewActivityMenuItem3">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="New Activity"/>
+        <Property name="componentPopupMenu" type="javax.swing.JPopupMenu" editor="org.netbeans.modules.form.ComponentChooserEditor">
+          <ComponentRef name="jActivityPopupMenu1"/>
+        </Property>
+      </Properties>
+    </Component>
+  </NonVisualComponents>
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
   </Properties>

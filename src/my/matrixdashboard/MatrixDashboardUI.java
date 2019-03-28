@@ -8,6 +8,9 @@ package my.matrixdashboard;
 import java.util.*;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
+import javax.swing.table.*;
+
 
 /**
  *
@@ -46,10 +49,23 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jActivityPopupMenu1 = new javax.swing.JPopupMenu();
+        jActivityPropertiesMenuItem1 = new javax.swing.JMenuItem();
+        jCloneActivityMenuItem2 = new javax.swing.JMenuItem();
+        jNewActivityMenuItem3 = new javax.swing.JMenuItem();
         jAppAreasComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jMainTable1 = new javax.swing.JTable();
         jProjectsComboBox1 = new javax.swing.JComboBox<>();
+
+        jActivityPropertiesMenuItem1.setText("Properties");
+        jActivityPropertiesMenuItem1.setComponentPopupMenu(jActivityPopupMenu1);
+
+        jCloneActivityMenuItem2.setText("Clone Activity");
+        jCloneActivityMenuItem2.setComponentPopupMenu(jActivityPopupMenu1);
+
+        jNewActivityMenuItem3.setText("New Activity");
+        jNewActivityMenuItem3.setComponentPopupMenu(jActivityPopupMenu1);
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -195,6 +211,22 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
         try{
+            MDCell.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            CellPath.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            CellTool.droptable();
+        }catch(Exception e) {
+        };
+        try{
+            Tool.droptable();
+        }catch(Exception e) {
+        };
+        try{
             AppFunc.droptable();
         }catch(Exception e) {
         };
@@ -241,6 +273,22 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         };
         try{
             Activity.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            Tool.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            MDCell.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            CellTool.createtable();
+        }catch(Exception e) {
+        };
+        try{
+            CellPath.createtable();
         }catch(Exception e) {
         };
     }                                                 
@@ -409,7 +457,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         int nextaid = 1;
         for (Project project : projects) {
             Activity a = null;
-            for (int i=0 ; i<10 ; i++) {
+            for (int i=0 ; i<3 ; i++) {
                 a = new Activity(nextaid++, project.id, ("Activity" + project.id + "-" + nextaid), (i%3)+1, (i%3)+1);
                 try{
                     a.writetodatabase();
@@ -424,7 +472,50 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
         */
-    }                                
+
+        Tool t = null;
+        int nexttid = 1;
+        t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTABLE, "some1pathhere");
+        try{
+            t.writetodatabase();
+        }catch(Exception e) {
+        };
+        t = new Tool(nexttid++, "ZAP", Database.PATHTYPE_EXECUTABLE, "some2pathhere");
+        try{
+            t.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        MDCell cell = null;
+        int nextcellid = 1;
+        // make an orphan cell just for testing
+        cell = new MDCell(nextcellid++, 1, 1, 1);
+        try{
+            cell.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        CellTool ct = null;
+        int nextctid = 1;
+        ct = new CellTool(nextctid++, 1, 1);
+        try{
+            ct.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        CellPath cp = null;
+        int nextcpid = 1;
+        cp = new CellPath(nextcpid++, 1, Database.CELLPATHTYPE_APPPAGE, "Login page", Database.PATHTYPE_OSOPEN, "some3path");
+        try{
+            cp.writetodatabase();
+        }catch(Exception e) {
+        };
+        cp = new CellPath(nextcpid++, 1, Database.CELLPATHTYPE_DOC, "User manual", Database.PATHTYPE_OSOPEN, "some4path");
+        try{
+            cp.writetodatabase();
+        }catch(Exception e) {
+        };
+    }                         
     
     private void changeselectedproject(int nnewproject) {
         ncurrentproject = nnewproject;
@@ -525,6 +616,15 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
           new javax.swing.table.DefaultTableModel(
             contents,
             columnheaders) {
+                @Override
+                public Class<?> getColumnClass(int columnIndex) {
+                   if (columnIndex == 0)
+                       return Activity.class;
+                   else if (columnIndex > 2)
+                       return String.class;
+                   else
+                       return MDCell.class;
+                }
                 public boolean isCellEditable(int rowIndex, int columnIndex) {
                     return false;
                 }
@@ -541,7 +641,15 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         jMainTable1.getColumnModel().getColumn(0).setPreferredWidth(100);
         jMainTable1.getColumnModel().getColumn(1).setPreferredWidth(20);
         jMainTable1.getColumnModel().getColumn(2).setPreferredWidth(45);
+        
+        TableCellRenderer r = new MyTableCellRenderer();
+        jMainTable1.setDefaultRenderer(Object.class, r);
+        // getColumnModel().getColumn(i).setCellRenderer(renderer);
 
+        // want to attach listener to cell
+        //MouseListener popupListener = new PopupListener();
+        //output.addMouseListener(popupListener);
+    
     }
     
     private void start(){
@@ -632,9 +740,89 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         
     }
 
+    
+    class ActivityPopClickListener extends MouseAdapter {
+        public void mousePressed(MouseEvent e) {
+            if (e.isPopupTrigger())
+                doPop(e);
+        }
+
+        public void mouseReleased(MouseEvent e) {
+            if (e.isPopupTrigger())
+                doPop(e);
+        }
+
+        private void doPop(MouseEvent e) {
+            jActivityPopupMenu1.show(e.getComponent(), e.getX(), e.getY());
+        }
+    }
+
+    /*
+    class Cell{
+        String text;
+    }
+    */
+
+    class MyTableCellRenderer implements TableCellRenderer{
+        // cellLabel will be used to render each cell. Note that
+        // this component is re-used for painting each cell, we
+        // don't have separate instances for all cells.
+        private JLabel cellLabel=new JLabel();
+
+        @Override
+        public Component getTableCellRendererComponent(
+                                                        JTable table,
+                                                        Object value,
+                                                        boolean isSelected,
+                                                        boolean hasFocus,
+                                                        int row,
+                                                        int column) {
+            
+            /*
+            JComponent comp = (JComponent)
+super.getTableCellRendererComponent(table, value, isSelected, hasFocus,
+row, column);
+          comp.setBorder(border);
+           if(row == 2 && column == 2)comp.setBorder(border1);
+           return comp;
+            */
+            if ((row == 0) && (column == 0))
+                System.out.println("getTableCellRendererComponent: called, value == '" + value + "', isSelected " + isSelected + ", hasFocus " + hasFocus + ", r,c == " + row + "," + column);
+            //Cell cell=(Cell)value;
+            /*
+            if (row == 1) {
+                cellLabel.setText("something");
+                return cellLabel;
+            } else {
+                return cellLabel;   // want to call default renderer here
+                
+            }
+            */
+            Class c = table.getColumnClass(column);
+            if (c.equals(String.class)) {
+                cellLabel.setText((String)value);
+                return cellLabel;                
+            } else if (c.equals(Activity.class)) {
+                cellLabel.setText((String)value);
+                return cellLabel;                                
+            } else if (c.equals(MDCell.class)) {
+                cellLabel.setText((String)value);
+                return cellLabel;                
+            } else {
+                System.out.println("getTableCellRendererComponent: unknown class c '" + c + "'"); 
+                return null;
+            }
+        }    
+    }
+    
+    
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPopupMenu jActivityPopupMenu1;
+    private javax.swing.JMenuItem jActivityPropertiesMenuItem1;
     private javax.swing.JComboBox<String> jAppAreasComboBox1;
+    private javax.swing.JMenuItem jCloneActivityMenuItem2;
     private javax.swing.JTable jMainTable1;
+    private javax.swing.JMenuItem jNewActivityMenuItem3;
     private javax.swing.JComboBox<String> jProjectsComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
