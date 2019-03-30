@@ -608,10 +608,8 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         System.out.println("setmaintable: called");
 
         // tricky:  column 0 is Activity name
-        //          column 1 is Role name
-        //          column 2 is Client name
         int nrows = this.activities.size();
-        int ncolumns = this.appfuncs.size()+3;
+        int ncolumns = this.appfuncs.size()+1;
         System.out.println("setmaintable: nrows == " + nrows + ", ncolumns == " + ncolumns);
         System.out.println("setmaintable: this.roles.size() == " + this.roles.size() + ", this.clients.size() == " + this.clients.size());
         
@@ -620,26 +618,16 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         this.activitypanels = new ArrayList<ActivityPanel>();
                 
         columnheaders[0] = new String("");
-        columnheaders[1] = new String("R");
-        columnheaders[2] = new String("Client");
-        for (int c=3 ; c<ncolumns ; c++)
-            columnheaders[c] = new String(this.appfuncs.get(c-3).name);
+        for (int c=1 ; c<ncolumns ; c++)
+            columnheaders[c] = new String(this.appfuncs.get(c-1).name);
         
         for (int r=0 ; r<nrows ; r++) {
             ActivityPanel ap = new ActivityPanel(this.activities.get(r), this.roles.get(r), this.clients.get(r));
             contents[r][0] = ap;
             this.activitypanels.add(ap);
-            String abbrev = this.roles.get(r).abbrev;
-            if (abbrev.equals(Database.NONEABBREV))
-                abbrev = "";
-            contents[r][1] = new String(abbrev);
-            String cname = this.clients.get(r).name;
-            if (cname.equals(Database.NONENAME))
-                cname = "";
-            contents[r][2] = new String(cname);
         }
         for (int r=0 ; r<nrows ; r++)
-            for (int c=3 ; c<ncolumns ; c++)
+            for (int c=1 ; c<ncolumns ; c++)
                 contents[r][c] = new String("cell" + r + c);
         
         jMainTable1.setModel(
@@ -650,11 +638,8 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                 public Class<?> getColumnClass(int columnIndex) {
                    if (columnIndex == 0)
                        return ActivityPanel.class;
-                   else if (columnIndex > 2)
-                       return MDCell.class;
                    else
-                       // role and client columns
-                       return String.class;
+                       return MDCell.class;
                 }
                 public boolean isCellEditable(int rowIndex, int columnIndex) {
                     return false;
@@ -667,14 +652,14 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(800, 530));
         jMainTable1.setPreferredSize(new java.awt.Dimension(800, 500));
+        
+        //jMainTable1.setRowHeight(30);
+        
+        jMainTable1.setShowGrid(true);
+        jMainTable1.setGridColor(Color.black);
+        
         jMainTable1.getColumnModel().getColumn(0).setMinWidth(100);
-        jMainTable1.getColumnModel().getColumn(1).setMinWidth(20);
-        jMainTable1.getColumnModel().getColumn(2).setMinWidth(45);
-        jMainTable1.getColumnModel().getColumn(1).setMaxWidth(20);
-        jMainTable1.getColumnModel().getColumn(2).setMaxWidth(45);
         jMainTable1.getColumnModel().getColumn(0).setPreferredWidth(100);
-        jMainTable1.getColumnModel().getColumn(1).setPreferredWidth(20);
-        jMainTable1.getColumnModel().getColumn(2).setPreferredWidth(45);
         
         TableCellRenderer r = new MyTableCellRenderer();
         jMainTable1.setDefaultRenderer(Object.class, r);
@@ -696,9 +681,11 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                 Object o = jMainTable1.getModel().getValueAt(r,c);
 
                 if (c == 0) {
-                    // clicked on an Activity
-                  ((ActivityPanel)o).doPopupMenu(evt);
+                  // clicked on an Activity
+                  ActivityPopupMenu pu = new ActivityPopupMenu(activities.get(r), roles.get(r), clients.get(r));
+                  pu.doPopupMenu(evt);
                 } else {
+                    // cell click code goes here !!!
                     super.mouseClicked(evt);
                 }
               } else {
