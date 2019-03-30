@@ -51,10 +51,43 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jActivityPopupMenu1 = new javax.swing.JPopupMenu();
+        jActivityPropertiesMenuItem1 = new javax.swing.JMenuItem();
+        jCloneActivityMenuItem2 = new javax.swing.JMenuItem();
+        jNewActivityMenuItem3 = new javax.swing.JMenuItem();
+        jActivityPanel = new javax.swing.JPanel();
         jAppAreasComboBox1 = new javax.swing.JComboBox<>();
         jScrollPane1 = new javax.swing.JScrollPane();
         jMainTable1 = new javax.swing.JTable();
         jProjectsComboBox1 = new javax.swing.JComboBox<>();
+
+        jActivityPropertiesMenuItem1.setText("Properties");
+        jActivityPropertiesMenuItem1.setComponentPopupMenu(jActivityPopupMenu1);
+
+        jCloneActivityMenuItem2.setText("Clone Activity");
+        jCloneActivityMenuItem2.setComponentPopupMenu(jActivityPopupMenu1);
+
+        jNewActivityMenuItem3.setText("New Activity");
+        jNewActivityMenuItem3.setComponentPopupMenu(jActivityPopupMenu1);
+
+        jActivityPanel.setInheritsPopupMenu(true);
+        jActivityPanel.setPreferredSize(new java.awt.Dimension(100, 20));
+        jActivityPanel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jActivityPanelMouseClicked(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jActivityPanelLayout = new javax.swing.GroupLayout(jActivityPanel);
+        jActivityPanel.setLayout(jActivityPanelLayout);
+        jActivityPanelLayout.setHorizontalGroup(
+            jActivityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
+        jActivityPanelLayout.setVerticalGroup(
+            jActivityPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 100, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -167,12 +200,16 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         for (int i=0 ; i<projects.size() ; i++) {
             if (projects.get(i).name.equals(selected)) {
                 if (i != ncurrentproject)
-                    changeselectedproject(i);
+                changeselectedproject(i);
                 return;
             }
         }
         System.out.println("jProjectsComboBox1ActionPerformed: combobox selected project not in list");
     }//GEN-LAST:event_jProjectsComboBox1ActionPerformed
+
+    private void jActivityPanelMouseClicked(java.awt.event.MouseEvent evt) {
+
+    }
 
     private void createemptydatabase(){
         try{
@@ -778,16 +815,16 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                                                         int row,
                                                         int column) {
             
-            if (row == 0)
-                System.out.println("getTableCellRendererComponent: called, value.class == " + value.getClass() + ", value == '" + value + "', isSelected " + isSelected + ", hasFocus " + hasFocus + ", r,c == " + row + "," + column);
+            //if (row == 0)
+            //    System.out.println("getTableCellRendererComponent: called, value.class == " + value.getClass() + ", value == '" + value + "', isSelected " + isSelected + ", hasFocus " + hasFocus + ", r,c == " + row + "," + column);
 
             Class c = table.getColumnClass(column);
             if (c.equals(String.class)) {
                 cellLabel.setText((String)value);
                 return cellLabel;                
             } else if (c.equals(ActivityPanel.class)) {
-                System.out.println("getTableCellRendererComponent: class is ActivityPanel, nameLabel == " + ((ActivityPanel)value).nameLabel);
-                System.out.println("getTableCellRendererComponent: nameLabel.getText() == " + ((ActivityPanel)value).nameLabel.getText());
+                //System.out.println("getTableCellRendererComponent: class is ActivityPanel, nameLabel == " + ((ActivityPanel)value).nameLabel);
+                //System.out.println("getTableCellRendererComponent: nameLabel.getText() == " + ((ActivityPanel)value).nameLabel.getText());
                 return activitypanels.get(row);
             } else if (c.equals(MDCell.class)) {
                 cellLabel.setText((String)value);
@@ -801,8 +838,13 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     
     
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jActivityPanel;
+    private javax.swing.JPopupMenu jActivityPopupMenu1;
+    private javax.swing.JMenuItem jActivityPropertiesMenuItem1;
     private javax.swing.JComboBox<String> jAppAreasComboBox1;
+    private javax.swing.JMenuItem jCloneActivityMenuItem2;
     private javax.swing.JTable jMainTable1;
+    private javax.swing.JMenuItem jNewActivityMenuItem3;
     private javax.swing.JComboBox<String> jProjectsComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
