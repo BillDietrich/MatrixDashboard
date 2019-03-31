@@ -82,7 +82,7 @@ public class MDCell {
    }
 
    public void writetodatabase() {
-    System.out.println("MDCell.writetodatabase: called, id == " + id + ", activityid '" + activityid + "'");        
+    System.out.println("MDCell.writetodatabase: called, id == " + id + ", projectid " + projectid + ", appfuncid " + appfuncid + ", activityid " + activityid);        
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
@@ -100,7 +100,7 @@ public class MDCell {
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
-      String sql = "SELECT * FROM cells WHERE id=" + id + " AND projectid=" + projectid + " AND appfuncid=" + appfuncid + " AND activityid=" + activityid;
+      String sql = "SELECT * FROM cells WHERE projectid=" + projectid + " AND appfuncid=" + appfuncid + " AND activityid=" + activityid;
       stmt.executeQuery(sql);
       ResultSet rs = stmt.executeQuery(sql);
       if (rs.next()){

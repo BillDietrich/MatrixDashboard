@@ -16,9 +16,9 @@ import java.util.*;
 public class Tool {
     
    int id;
-   String name;
-   String pathtype;
-   String path;
+   String name;         // set by user
+   String pathtype;     // Database.PATHTYPE_*
+   String path;         // URL or local OS file path
 
    // constructors
    public Tool(int id, String name, String pathtype, String path) {

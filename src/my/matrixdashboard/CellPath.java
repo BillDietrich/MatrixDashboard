@@ -17,19 +17,29 @@ public class CellPath {
     
    int id;
    int cellid;
-   String cellpathtype;
-   String pathname;
-   String pathtype;
-   String path;
+   String cellpathtype; // CellPath.CELLPATHTYPE_*
+   String pathname;     // set by user
+   String pathtype;     // Database.PATHTYPE_*
+   String path;         // URL or local OS file path
+   int toolid;
+   String args;         // for launching a tool
 
+   public static final String CELLPATHTYPE_APPPAGE = "A";
+   public static final String CELLPATHTYPE_DOC = "D";
+   public static final String CELLPATHTYPE_BUGREPORT = "B";
+   public static final String CELLPATHTYPE_TOOL = "T";
+
+   
    // constructors
-   public CellPath(int id, int cellid, String cellpathtype, String pathname, String pathtype, String path) {
+   public CellPath(int id, int cellid, String cellpathtype, String pathname, String pathtype, String path, int toolid, String args) {
        this.id = id;
        this.cellid = cellid;
        this.cellpathtype = cellpathtype;
        this.pathname = pathname;
        this.pathtype = pathtype;
        this.path = path;
+       this.toolid = toolid;
+       this.args = args;
    }
    public CellPath(int id, int cellid) {
        this.id = id;
@@ -38,6 +48,8 @@ public class CellPath {
        this.pathname = null;
        this.pathtype = null;
        this.path = null;
+       this.toolid = 0;
+       this.args = null;
    }
    
    public static void createtable() {
@@ -52,8 +64,11 @@ public class CellPath {
                    " pathname TEXT, " + 
                    " pathtype TEXT, " + 
                    " path TEXT, " + 
+                   " toolid INTEGER not NULL, " +
+                   " args TEXT, " + 
                    " PRIMARY KEY ( id ), " +
-                   " FOREIGN KEY(cellid) REFERENCES cells(id))";
+                   " FOREIGN KEY(cellid) REFERENCES cells(id) " +
+                   " FOREIGN KEY(toolid) REFERENCES tools(id))";
 
       stmt.executeUpdate(sql);
     }catch(Exception e){
@@ -83,9 +98,11 @@ public class CellPath {
          String pathname = rs.getString("pathname");
          String pathtype = rs.getString("pathtype");
          String path = rs.getString("path");
-         CellPath cp = new CellPath(id,cellid,cellpathtype,pathname,pathtype,path);
+         int toolid = rs.getInt("toolid");
+         String args = rs.getString("args");
+         CellPath cp = new CellPath(id,cellid,cellpathtype,pathname,pathtype,path,toolid,args);
          thelist.add(cp);
-        System.out.println("CellPath.getallcellpaths: got id == " + id + ", cellpathtype '" + cellpathtype + "', pathname '" + pathname + "', pathtype '" + pathtype + "', path '" + path + "'");
+        System.out.println("CellPath.getallcellpaths: got id == " + id + ", cellpathtype '" + cellpathtype + "', pathname '" + pathname + "', pathtype '" + pathtype + "', path '" + path + "', toolid " + toolid + ", args '" + args + "'");
       }
       rs.close();
     }catch(Exception e){
@@ -98,14 +115,14 @@ public class CellPath {
    }
 
    public void writetodatabase() {
-    System.out.println("CellPath.writetodatabase: called, id == " + id + ", cellid == " + cellid + ", pathname '" + pathname + "'");        
+    System.out.println("CellPath.writetodatabase: called, id == " + id + ", cellid == " + cellid + ", cellpathtype '" + cellpathtype + "', pathname '" + pathname + "', pathtype '" + pathtype + "', path '" + path + "', toolid " + toolid + ", args '" + args + "'");        
+    String sql = "INSERT OR REPLACE INTO cellpaths VALUES(" + id + "," + cellid + ",'" + cellpathtype + "','" + pathname + "','" + pathtype + "','" + path + "'," + toolid + ",'" + args + "')";
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
-      String sql = "INSERT OR REPLACE INTO cellpaths VALUES(" + id + "," + cellid + ",'" + cellpathtype + "','" + pathname + "','" + pathtype + "','" + path + "')";
-      // write fails silently if name violates the UNIQUE constraint !!!
       stmt.executeUpdate(sql);
     }catch(Exception e){
+       System.out.println("CellPath.writetodatabase: SQL stmt: " + sql);
        System.out.println("CellPath.writetodatabase: error: " + e.getMessage());
     }finally{
        System.out.println("CellPath.writetodatabase: finished");        
@@ -113,7 +130,7 @@ public class CellPath {
    }
 
    public void readfromdatabase() {
-    System.out.println("CellPath.readfromdatabase: called");        
+    System.out.println("CellPath.readfromdatabase: called, id == " + id + ", cellid == " + cellid);        
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
@@ -126,6 +143,8 @@ public class CellPath {
          this.pathname = rs.getString("pathname");
          this.pathtype = rs.getString("pathtype");
          this.path = rs.getString("path");
+         int toolid = rs.getInt("toolid");
+         String args = rs.getString("args");
         System.out.println("CellPath.readfromdatabase: got id == " + this.id + ", pathname '" + this.pathname + "'");
       } else
        System.out.println("CellPath.readfromdatabase: record not found");

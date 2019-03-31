@@ -18,12 +18,9 @@ public class Database {
    public static final int NONEID = 1;
    public static final String NONENAME = "---none---";
    public static final String NONEABBREV = "-";
-
+   
    public static final String PATHTYPE_EXECUTABLE = "X";
    public static final String PATHTYPE_OSOPEN = "O";
-
-   public static final String CELLPATHTYPE_APPPAGE = "A";
-   public static final String CELLPATHTYPE_DOC = "D";
    
    
    public void open() {

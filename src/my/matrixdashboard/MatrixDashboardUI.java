@@ -29,8 +29,12 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     ArrayList<Activity> activities;    // for current project
     ArrayList<Role> roles;             // for current activities
     ArrayList<Client> clients;         // for current activities
+    // tricky: mdcells has one less column than the table has
+    ArrayList<ArrayList<MDCell>> mdcells;    // for current project
 
     ArrayList<ActivityPanel> activitypanels;    // for current project
+    // tricky: cellpanels has one less column than the table has
+    ArrayList<ArrayList<CellPanel>> cellpanels;    // for current project
     
     /**
      * Creates new form MatrixDashboardUI
@@ -208,7 +212,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     }//GEN-LAST:event_jProjectsComboBox1ActionPerformed
 
     private void jActivityPanelMouseClicked(java.awt.event.MouseEvent evt) {
-
+        System.out.println("jActivityPanelMouseClicked: should never happen");
     }
 
     private void createemptydatabase(){
@@ -242,10 +246,6 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         };
         try{
             CellPath.droptable();
-        }catch(Exception e) {
-        };
-        try{
-            CellTool.droptable();
         }catch(Exception e) {
         };
         try{
@@ -310,25 +310,23 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
         try{
-            CellTool.createtable();
-        }catch(Exception e) {
-        };
-        try{
             CellPath.createtable();
         }catch(Exception e) {
         };
     }                                                 
 
     private void createinitproject(){
+
+        System.out.println("createinitproject: called");
         
         Project pInit = new Project(1,"Init");
         try{
             pInit.writetodatabase();
         }catch(Exception e) {
         };
-        int nextid = 2;
-        for ( ; nextid<4 ; nextid++) {
-            Project p = new Project(nextid,"proj"+nextid);
+        int nextpid = 2;
+        for ( ; nextpid<2 ; nextpid++) {
+            Project p = new Project(nextpid,"proj"+nextpid);
             p.writetodatabase();
         }
 
@@ -377,6 +375,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                     af.writetodatabase();
                 }catch(Exception e) {
                 };
+                /*
                 af = new AppFunc(nextafid++, project.id, apparea.id, "PW Change" + project.id + apparea.id);
                 try{
                     af.writetodatabase();
@@ -387,6 +386,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                     af.writetodatabase();
                 }catch(Exception e) {
                 };
+                */
             }
         }
 
@@ -511,39 +511,54 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             t.writetodatabase();
         }catch(Exception e) {
         };
-
-        MDCell cell = null;
+       
         int nextcellid = 1;
-        // make an orphan cell just for testing
-        cell = new MDCell(nextcellid++, 1, 1, 1);
-        try{
-            cell.writetodatabase();
-        }catch(Exception e) {
-        };
-
-        CellTool ct = null;
-        int nextctid = 1;
-        ct = new CellTool(nextctid++, 1, 1);
-        try{
-            ct.writetodatabase();
-        }catch(Exception e) {
-        };
+        for (int pid=1 ; pid<nextpid ; pid++) {
+        for (int afid=1 ; afid<nextafid ; afid++) {
+        for (int aid=1 ; aid<nextaid ; aid++) {
+            MDCell cell = new MDCell(nextcellid++, pid, afid, aid);
+            try{
+                cell.writetodatabase();
+            }catch(Exception e) {
+            };
+        }
+        }
+        }
 
         CellPath cp = null;
         int nextcpid = 1;
-        cp = new CellPath(nextcpid++, 1, Database.CELLPATHTYPE_APPPAGE, "Login page", Database.PATHTYPE_OSOPEN, "some3path");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_APPPAGE, "Login page", Database.PATHTYPE_OSOPEN, "some3path", Database.NONEID, "");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
         };
-        cp = new CellPath(nextcpid++, 1, Database.CELLPATHTYPE_DOC, "User manual", Database.PATHTYPE_OSOPEN, "some4path");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_DOC, "User manual", Database.PATHTYPE_OSOPEN, "some4path", Database.NONEID, "");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
         };
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_BUGREPORT, "Bug1", Database.PATHTYPE_OSOPEN, "some4path", Database.NONEID, "");
+        try{
+            cp.writetodatabase();
+        }catch(Exception e) {
+        };
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool1", Database.PATHTYPE_OSOPEN, "some4path", 1, "");
+        try{
+            cp.writetodatabase();
+        }catch(Exception e) {
+        };
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool1", Database.PATHTYPE_OSOPEN, "some4path", 2, "");
+        try{
+            cp.writetodatabase();
+        }catch(Exception e) {
+        };
+
+        System.out.println("createinitproject: return");
     }                         
     
     private void changeselectedproject(int nnewproject) {
+        System.out.println("changeselectedproject: called, nnewproject == " + nnewproject);
+        
         ncurrentproject = nnewproject;
         try{
             this.appareas = AppArea.getallappareas(this.projects.get(ncurrentproject).id);
@@ -577,15 +592,40 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }
         
         changeselectedapparea(0);   // this will redraw main table at end
+        
+        System.out.println("changeselectedproject: return");
     }                                
     
     private void changeselectedapparea(int nnewapparea) {
+        System.out.println("changeselectedapparea: called, nnewapparea == " + nnewapparea);
+
         ncurrentapparea = nnewapparea;
         try{
             this.appfuncs = AppFunc.getallappfuncs(this.projects.get(ncurrentproject).id, this.appareas.get(ncurrentapparea).id);
         }catch(Exception e) {
         };
+
+        this.mdcells = new ArrayList<ArrayList<MDCell>>();
+        int pid = this.projects.get(ncurrentproject).id;
+        for (int r = 0 ; r<this.activities.size() ; r++) {
+            ArrayList<MDCell> row = new ArrayList<MDCell>();
+            int aid = this.activities.get(r).id;
+            for (int c = 0 ; c<this.appfuncs.size() ; c++) {
+                int afid = this.appfuncs.get(c).id;
+                MDCell mdc = new MDCell(0, pid, afid, aid);
+                try{
+                    mdc.readfromdatabase();
+                    row.add(mdc);
+                }catch(Exception e) {
+                    System.out.println("changeselectedproject: mdcell error " + e);
+                };
+            }
+            this.mdcells.add(row);
+        }
+
         setmaintable();
+
+        System.out.println("changeselectedapparea: return");
     }                          
     
     private void setprojectscomboboxcontents() {
@@ -616,6 +656,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         Object [][] contents = new Object [nrows][ncolumns];
         String [] columnheaders = new String [ncolumns];
         this.activitypanels = new ArrayList<ActivityPanel>();
+        this.cellpanels = new ArrayList<ArrayList<CellPanel>>();
                 
         columnheaders[0] = new String("");
         for (int c=1 ; c<ncolumns ; c++)
@@ -626,9 +667,16 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             contents[r][0] = ap;
             this.activitypanels.add(ap);
         }
-        for (int r=0 ; r<nrows ; r++)
-            for (int c=1 ; c<ncolumns ; c++)
-                contents[r][c] = new String("cell" + r + c);
+        for (int r=0 ; r<nrows ; r++) {
+            ArrayList<CellPanel> row = new ArrayList<CellPanel>();
+            for (int c=1 ; c<ncolumns ; c++) {
+                MDCell mdc = this.mdcells.get(r).get(c-1);
+                CellPanel cp = new CellPanel(mdc);
+                contents[r][c] = cp;
+                row.add(cp);
+            }
+            this.cellpanels.add(row);
+        }
         
         jMainTable1.setModel(
           new javax.swing.table.DefaultTableModel(
@@ -639,7 +687,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                    if (columnIndex == 0)
                        return ActivityPanel.class;
                    else
-                       return MDCell.class;
+                       return CellPanel.class;
                 }
                 public boolean isCellEditable(int rowIndex, int columnIndex) {
                     return false;
@@ -685,8 +733,12 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                   ActivityPopupMenu pu = new ActivityPopupMenu(activities.get(r), roles.get(r), clients.get(r));
                   pu.doPopupMenu(evt);
                 } else {
-                    // cell click code goes here !!!
-                    super.mouseClicked(evt);
+                    JDialog dialog = new JDialog(MatrixDashboardUI.mdui, "Cell Properties", true);
+                    CellDialog cd = new CellDialog(MatrixDashboardUI.mdui, dialog, cellpanels.get(r).get(c-1));
+                    dialog.getContentPane().add(cd);
+                    dialog.pack();
+                    dialog.setLocationRelativeTo(null);
+                    dialog.setVisible(true);
                 }
               } else {
                     super.mouseClicked(evt);                  
@@ -709,7 +761,6 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
 
-/*        
         try{
             createemptydatabase();
         }catch(Exception e) {
@@ -718,7 +769,6 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             createinitproject();
         }catch(Exception e) {
         };
-*/
 
         try{
             this.projects = Project.getallprojects();
@@ -810,12 +860,12 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
                 cellLabel.setText((String)value);
                 return cellLabel;                
             } else if (c.equals(ActivityPanel.class)) {
-                //System.out.println("getTableCellRendererComponent: class is ActivityPanel, nameLabel == " + ((ActivityPanel)value).nameLabel);
+                //System.out.println("getTableCellRendererComponent: class is ActivityPanel, a.name == '" + ((ActivityPanel)value).a.name + "'");
                 //System.out.println("getTableCellRendererComponent: nameLabel.getText() == " + ((ActivityPanel)value).nameLabel.getText());
                 return activitypanels.get(row);
-            } else if (c.equals(MDCell.class)) {
-                cellLabel.setText((String)value);
-                return cellLabel;                
+            } else if (c.equals(CellPanel.class)) {
+                //System.out.println("getTableCellRendererComponent: class is CellPanel, c.id == " + ((CellPanel)value).c.id);
+                return cellpanels.get(row).get(column-1);
             } else {
                 System.out.println("getTableCellRendererComponent: unknown class c '" + c + "'"); 
                 return null;
