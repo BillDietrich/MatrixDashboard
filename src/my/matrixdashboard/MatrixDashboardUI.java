@@ -760,7 +760,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             db.open();
         }catch(Exception e) {
         };
-
+/*
         try{
             createemptydatabase();
         }catch(Exception e) {
@@ -769,7 +769,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             createinitproject();
         }catch(Exception e) {
         };
-
+*/
         try{
             this.projects = Project.getallprojects();
         }catch(Exception e) {

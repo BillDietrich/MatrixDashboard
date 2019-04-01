@@ -19,6 +19,7 @@ public class CellDialog extends javax.swing.JPanel {
     CellPanel cp = null;
     JFrame f = null;
     JDialog d = null;
+    char cButtonSelected = ' ';
 
     /**
      * Creates new form CellDialog
@@ -29,6 +30,12 @@ public class CellDialog extends javax.swing.JPanel {
         this.d = d;
         this.cp = cp;
         initComponents();
+        buttonGroup1.add(jAppPagesRadioButton);
+        buttonGroup1.add(jBugReportsRadioButton);
+        buttonGroup1.add(jDocsRadioButton);
+        buttonGroup1.add(jToolsRadioButton);
+        jAppPagesRadioButton.setSelected(true);
+        cButtonSelected = 'A';
     }
 
     /**
@@ -41,9 +48,6 @@ public class CellDialog extends javax.swing.JPanel {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
-        buttonGroup2 = new javax.swing.ButtonGroup();
-        buttonGroup3 = new javax.swing.ButtonGroup();
-        buttonGroup4 = new javax.swing.ButtonGroup();
         jAppPagesLabel = new javax.swing.JLabel();
         jAppPagesComboBox = new javax.swing.JComboBox<>();
         jDocsLabel = new javax.swing.JLabel();
@@ -80,26 +84,65 @@ public class CellDialog extends javax.swing.JPanel {
         jAppPagesLabel.setText("App pages");
 
         jAppPagesComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jAppPagesComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jAppPagesComboBoxActionPerformed(evt);
+            }
+        });
 
         jDocsLabel.setText("Docs");
 
         jDocsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jDocsComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jDocsComboBoxActionPerformed(evt);
+            }
+        });
 
         jToolsLabel.setText("Tools");
 
         jToolsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jToolsComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToolsComboBoxActionPerformed(evt);
+            }
+        });
 
         jBugReportsLabel.setText("Bug reports");
 
         jBugReportsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jBugReportsComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBugReportsComboBoxActionPerformed(evt);
+            }
+        });
 
-        jAppPagesRadioButton.setText("jAppPageRadioButton");
+        jAppPagesRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jAppPagesRadioButtonActionPerformed(evt);
+            }
+        });
 
         jDocsRadioButton.setText("jAppPageRadioButton");
+        jDocsRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jDocsRadioButtonActionPerformed(evt);
+            }
+        });
 
         jToolsRadioButton.setText("jAppPageRadioButton");
+        jToolsRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jToolsRadioButtonActionPerformed(evt);
+            }
+        });
 
         jBugReportsRadioButton.setText("jAppPageRadioButton");
+        jBugReportsRadioButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBugReportsRadioButtonActionPerformed(evt);
+            }
+        });
 
         jCellPathTypeLabel.setText("App page");
 
@@ -279,12 +322,89 @@ public class CellDialog extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jNameTextFieldActionPerformed
 
+    private void jAppPagesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAppPagesComboBoxActionPerformed
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        String selected = (String)(comboBox.getSelectedItem());
+        System.out.println("jAppPagesComboBoxActionPerformed: " + selected);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jAppPagesComboBoxActionPerformed
+
+    private void jDocsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDocsComboBoxActionPerformed
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        String selected = (String)(comboBox.getSelectedItem());
+        System.out.println("jDocsComboBoxActionPerformed: " + selected);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDocsComboBoxActionPerformed
+
+    private void jToolsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToolsComboBoxActionPerformed
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        String selected = (String)(comboBox.getSelectedItem());
+        System.out.println("jToolsComboBoxActionPerformed: " + selected);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToolsComboBoxActionPerformed
+
+    private void jBugReportsComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBugReportsComboBoxActionPerformed
+        JComboBox comboBox = (JComboBox) evt.getSource();
+        String selected = (String)(comboBox.getSelectedItem());
+        System.out.println("jBugReportsComboBoxActionPerformed: " + selected);
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jBugReportsComboBoxActionPerformed
+
+    private void jAppPagesRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAppPagesRadioButtonActionPerformed
+        //System.out.println("jAppPagesRadioButtonActionPerformed: " + evt);
+        if (cButtonSelected != 'A') {
+            if (jAppPagesRadioButton.isSelected()) {
+                System.out.println("jAppPagesRadioButtonActionPerformed: selected now");
+                cButtonSelected = 'A';
+            } else {
+                // should never get this, if the button-group is working
+                System.out.println("jAppPagesRadioButtonActionPerformed: deselected now");                    
+            }
+        }
+    }//GEN-LAST:event_jAppPagesRadioButtonActionPerformed
+
+    private void jDocsRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDocsRadioButtonActionPerformed
+        if (cButtonSelected != 'D') {
+            if (jDocsRadioButton.isSelected()) {
+                System.out.println("jDocsRadioButtonActionPerformed: selected now");
+                cButtonSelected = 'D';
+            } else {
+                // should never get this, if the button-group is working
+                System.out.println("jDocsRadioButtonActionPerformed: deselected now");                    
+            }
+        }
+    }//GEN-LAST:event_jDocsRadioButtonActionPerformed
+
+    private void jToolsRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToolsRadioButtonActionPerformed
+        if (cButtonSelected != 'T') {
+            if (jToolsRadioButton.isSelected()) {
+                System.out.println("jToolsRadioButtonActionPerformed: selected now");
+                cButtonSelected = 'T';
+            } else {
+                // should never get this, if the button-group is working
+                System.out.println("jToolsRadioButtonActionPerformed: deselected now");                    
+            }
+        }
+    }//GEN-LAST:event_jToolsRadioButtonActionPerformed
+
+    private void jBugReportsRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBugReportsRadioButtonActionPerformed
+        if (cButtonSelected != 'B') {
+            if (jBugReportsRadioButton.isSelected()) {
+                System.out.println("jBugReportsRadioButtonActionPerformed: selected now");
+                cButtonSelected = 'B';
+            } else {
+                // should never get this, if the button-group is working
+                System.out.println("jBugReportsRadioButtonActionPerformed: deselected now");                    
+            }
+        }
+    }//GEN-LAST:event_jBugReportsRadioButtonActionPerformed
+
+    private void jAppPagesRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jAppPagesRadioButtonStateChanged
+    }//GEN-LAST:event_jAppPagesRadioButtonStateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
-    private javax.swing.ButtonGroup buttonGroup2;
-    private javax.swing.ButtonGroup buttonGroup3;
-    private javax.swing.ButtonGroup buttonGroup4;
     private javax.swing.JComboBox<String> jAppPagesComboBox;
     private javax.swing.JLabel jAppPagesLabel;
     private javax.swing.JRadioButton jAppPagesRadioButton;
