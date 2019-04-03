@@ -51,10 +51,7 @@
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="0" attributes="0">
                           <Group type="102" alignment="1" attributes="0">
-                              <Group type="103" groupAlignment="0" attributes="0">
-                                  <Component id="jAppPagesComboBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jBugReportsComboBox" alignment="0" min="-2" max="-2" attributes="0"/>
-                              </Group>
+                              <Component id="jAppPagesComboBox" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="127" max="32767" attributes="0"/>
                               <Component id="jCloseCellButton1" min="-2" max="-2" attributes="0"/>
                               <EmptySpace min="-2" pref="63" max="-2" attributes="0"/>
@@ -63,6 +60,11 @@
                               <Group type="103" groupAlignment="0" attributes="0">
                                   <Component id="jToolsComboBox" min="-2" max="-2" attributes="0"/>
                                   <Component id="jDocsComboBox" min="-2" max="-2" attributes="0"/>
+                                  <Group type="102" alignment="0" attributes="0">
+                                      <Component id="jBugReportsComboBox" min="-2" max="-2" attributes="0"/>
+                                      <EmptySpace min="-2" pref="66" max="-2" attributes="0"/>
+                                      <Component id="jNewButton" min="-2" max="-2" attributes="0"/>
+                                  </Group>
                               </Group>
                               <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
                           </Group>
@@ -152,13 +154,14 @@
                   <Component id="jToolsComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jToolsRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="11" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="9" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="3" attributes="0">
                   <Component id="jBugReportsLabel" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jBugReportsComboBox" alignment="3" min="-2" max="-2" attributes="0"/>
                   <Component id="jBugReportsRadioButton" alignment="3" min="-2" max="-2" attributes="0"/>
+                  <Component id="jNewButton" alignment="3" min="-2" max="-2" attributes="0"/>
               </Group>
-              <EmptySpace min="-2" pref="32" max="-2" attributes="0"/>
+              <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
               <Component id="jSeparator1" min="-2" pref="10" max="-2" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jCellPathTypeLabel" min="-2" max="-2" attributes="0"/>
@@ -409,21 +412,33 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Delete"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jDeleteButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jCancelButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Cancel"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCancelButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jSaveButton">
       <Properties>
         <Property name="text" type="java.lang.String" value="Save"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jSaveButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jCloseCellButton1">
       <Properties>
         <Property name="text" type="java.lang.String" value="Close Cell"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jCloseCellButton1ActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JButton" name="jRunButton">
       <Properties>
@@ -432,10 +447,21 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Run"/>
       </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jRunButtonActionPerformed"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator1">
     </Component>
     <Component class="javax.swing.JSeparator" name="jSeparator2">
+    </Component>
+    <Component class="javax.swing.JButton" name="jNewButton">
+      <Properties>
+        <Property name="text" type="java.lang.String" value="New"/>
+      </Properties>
+      <Events>
+        <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jNewButtonActionPerformed"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

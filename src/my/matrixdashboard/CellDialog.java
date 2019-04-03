@@ -19,7 +19,24 @@ public class CellDialog extends javax.swing.JPanel {
     CellPanel cp = null;
     JFrame f = null;
     JDialog d = null;
+    
     char cButtonSelected = ' ';
+    static final char TYPE_APPPAGE = 'A';
+    static final char TYPE_DOC = 'D';
+    static final char TYPE_TOOL = 'T';
+    static final char TYPE_BUGREPORT = 'B';
+    
+    // each element is an index into cp.cellpaths()
+    ArrayList<Integer> AppPageIndexes = null;
+    ArrayList<Integer> DocIndexes = null;
+    ArrayList<Integer> ToolIndexes = null;
+    ArrayList<Integer> BugReportIndexes = null;
+    
+    int ncurrentselected_apppages_combobox = 0;
+    int ncurrentselected_docs_combobox = 0;
+    int ncurrentselected_tools_combobox = 0;
+    int ncurrentselected_bugreports_combobox = 0;
+
 
     /**
      * Creates new form CellDialog
@@ -29,14 +46,54 @@ public class CellDialog extends javax.swing.JPanel {
         this.f = f;
         this.d = d;
         this.cp = cp;
+        
         initComponents();
         buttonGroup1.add(jAppPagesRadioButton);
         buttonGroup1.add(jBugReportsRadioButton);
         buttonGroup1.add(jDocsRadioButton);
         buttonGroup1.add(jToolsRadioButton);
         jAppPagesRadioButton.setSelected(true);
-        cButtonSelected = 'A';
+        cButtonSelected = TYPE_APPPAGE;
+        
+        setfourtypearrays();
+        
+        setapppagescomboboxcontents();
+        setdocscomboboxcontents();
+        settoolscomboboxcontents();
+        setbugreportscomboboxcontents();
+        
+        setpathtypescomboboxcontents();
+        setchoosetoolcomboboxcontents();
+
+        setupperpanestate();
+        setlowerpanecontents();
     }
+    
+    private void setfourtypearrays() {
+        System.out.println("setfourtypearrays: called");
+        AppPageIndexes = new ArrayList();
+        DocIndexes = new ArrayList();
+        ToolIndexes = new ArrayList();
+        BugReportIndexes = new ArrayList();
+        int i = 0;
+        for(CellPath cellpath : this.cp.cellpaths) {
+            switch (cellpath.cellpathtype.charAt(0)) {
+                case TYPE_APPPAGE:
+                    AppPageIndexes.add(i);
+                    break;
+                case TYPE_DOC:
+                    DocIndexes.add(i);
+                    break;
+                case TYPE_TOOL:
+                    ToolIndexes.add(i);
+                    break;
+                case TYPE_BUGREPORT:
+                    BugReportIndexes.add(i);
+                    break;
+            }
+            i++;
+        }
+    }               
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -48,6 +105,9 @@ public class CellDialog extends javax.swing.JPanel {
     private void initComponents() {
 
         buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
+        buttonGroup3 = new javax.swing.ButtonGroup();
+        buttonGroup4 = new javax.swing.ButtonGroup();
         jAppPagesLabel = new javax.swing.JLabel();
         jAppPagesComboBox = new javax.swing.JComboBox<>();
         jDocsLabel = new javax.swing.JLabel();
@@ -78,6 +138,7 @@ public class CellDialog extends javax.swing.JPanel {
         jRunButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
         jSeparator2 = new javax.swing.JSeparator();
+        jNewButton = new javax.swing.JButton();
 
         setMinimumSize(new java.awt.Dimension(438, 429));
 
@@ -117,6 +178,12 @@ public class CellDialog extends javax.swing.JPanel {
             }
         });
 
+        jAppPagesRadioButton.setText("jAppPageRadioButton");
+        jAppPagesRadioButton.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jAppPagesRadioButtonStateChanged(evt);
+            }
+        });
         jAppPagesRadioButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jAppPagesRadioButtonActionPerformed(evt);
@@ -173,15 +240,47 @@ public class CellDialog extends javax.swing.JPanel {
 
         jDeleteButton.setBackground(new java.awt.Color(247, 4, 4));
         jDeleteButton.setText("Delete");
+        jDeleteButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jDeleteButtonActionPerformed(evt);
+            }
+        });
 
         jCancelButton.setText("Cancel");
+        jCancelButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCancelButtonActionPerformed(evt);
+            }
+        });
 
         jSaveButton.setText("Save");
+        jSaveButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jSaveButtonActionPerformed(evt);
+            }
+        });
 
         jCloseCellButton1.setText("Close Cell");
+        jCloseCellButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCloseCellButton1ActionPerformed(evt);
+            }
+        });
 
         jRunButton.setBackground(new java.awt.Color(63, 241, 65));
         jRunButton.setText("Run");
+        jRunButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jRunButtonActionPerformed(evt);
+            }
+        });
+
+        jNewButton.setText("New");
+        jNewButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jNewButtonActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -205,16 +304,18 @@ public class CellDialog extends javax.swing.JPanel {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jAppPagesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jBugReportsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jAppPagesComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jCloseCellButton1)
                                 .addGap(63, 63, 63))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jToolsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jDocsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jDocsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addComponent(jBugReportsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(66, 66, 66)
+                                        .addComponent(jNewButton)))
                                 .addGap(0, 0, Short.MAX_VALUE))))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -279,12 +380,13 @@ public class CellDialog extends javax.swing.JPanel {
                     .addComponent(jToolsLabel)
                     .addComponent(jToolsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jToolsRadioButton))
-                .addGap(11, 11, 11)
+                .addGap(9, 9, 9)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jBugReportsLabel)
                     .addComponent(jBugReportsComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jBugReportsRadioButton))
-                .addGap(32, 32, 32)
+                    .addComponent(jBugReportsRadioButton)
+                    .addComponent(jNewButton))
+                .addGap(30, 30, 30)
                 .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCellPathTypeLabel)
@@ -321,6 +423,42 @@ public class CellDialog extends javax.swing.JPanel {
     private void jNameTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNameTextFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jNameTextFieldActionPerformed
+    
+    private void setapppagescomboboxcontents() {
+        System.out.println("setapppagescomboboxcontents: called");
+        String[] names = new String[40];
+        int i = 0;
+        for(Integer index : AppPageIndexes)
+             names[i++] = cp.cellpaths.get(index).pathname;
+        jAppPagesComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(names));
+    }               
+    
+    private void setdocscomboboxcontents() {
+        System.out.println("setdocscomboboxcontents: called");
+        String[] names = new String[40];
+        int i = 0;
+        for(Integer index : DocIndexes)
+             names[i++] = cp.cellpaths.get(index).pathname;
+        jDocsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(names));
+    }               
+    
+    private void settoolscomboboxcontents() {
+        System.out.println("settoolscomboboxcontents: called");
+        String[] names = new String[40];
+        int i = 0;
+        for(Integer index : ToolIndexes)
+             names[i++] = cp.cellpaths.get(index).pathname;
+        jToolsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(names));
+    }               
+    
+    private void setbugreportscomboboxcontents() {
+        System.out.println("setbugreportscomboboxcontents: called");
+        String[] names = new String[40];
+        int i = 0;
+        for(Integer index : BugReportIndexes)
+             names[i++] = cp.cellpaths.get(index).pathname;
+        jBugReportsComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(names));
+    }               
 
     private void jAppPagesComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAppPagesComboBoxActionPerformed
         JComboBox comboBox = (JComboBox) evt.getSource();
@@ -352,10 +490,12 @@ public class CellDialog extends javax.swing.JPanel {
 
     private void jAppPagesRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAppPagesRadioButtonActionPerformed
         //System.out.println("jAppPagesRadioButtonActionPerformed: " + evt);
-        if (cButtonSelected != 'A') {
+        if (cButtonSelected != TYPE_APPPAGE) {
             if (jAppPagesRadioButton.isSelected()) {
                 System.out.println("jAppPagesRadioButtonActionPerformed: selected now");
-                cButtonSelected = 'A';
+                cButtonSelected = TYPE_APPPAGE;
+                setupperpanestate();
+                setlowerpanecontents();
             } else {
                 // should never get this, if the button-group is working
                 System.out.println("jAppPagesRadioButtonActionPerformed: deselected now");                    
@@ -364,10 +504,12 @@ public class CellDialog extends javax.swing.JPanel {
     }//GEN-LAST:event_jAppPagesRadioButtonActionPerformed
 
     private void jDocsRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDocsRadioButtonActionPerformed
-        if (cButtonSelected != 'D') {
+        if (cButtonSelected != TYPE_DOC) {
             if (jDocsRadioButton.isSelected()) {
                 System.out.println("jDocsRadioButtonActionPerformed: selected now");
-                cButtonSelected = 'D';
+                cButtonSelected = TYPE_DOC;
+                setupperpanestate();
+                setlowerpanecontents();
             } else {
                 // should never get this, if the button-group is working
                 System.out.println("jDocsRadioButtonActionPerformed: deselected now");                    
@@ -376,10 +518,12 @@ public class CellDialog extends javax.swing.JPanel {
     }//GEN-LAST:event_jDocsRadioButtonActionPerformed
 
     private void jToolsRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToolsRadioButtonActionPerformed
-        if (cButtonSelected != 'T') {
+        if (cButtonSelected != TYPE_TOOL) {
             if (jToolsRadioButton.isSelected()) {
                 System.out.println("jToolsRadioButtonActionPerformed: selected now");
-                cButtonSelected = 'T';
+                cButtonSelected = TYPE_TOOL;
+                setupperpanestate();
+                setlowerpanecontents();
             } else {
                 // should never get this, if the button-group is working
                 System.out.println("jToolsRadioButtonActionPerformed: deselected now");                    
@@ -388,10 +532,12 @@ public class CellDialog extends javax.swing.JPanel {
     }//GEN-LAST:event_jToolsRadioButtonActionPerformed
 
     private void jBugReportsRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBugReportsRadioButtonActionPerformed
-        if (cButtonSelected != 'B') {
+        if (cButtonSelected != TYPE_BUGREPORT) {
             if (jBugReportsRadioButton.isSelected()) {
                 System.out.println("jBugReportsRadioButtonActionPerformed: selected now");
-                cButtonSelected = 'B';
+                cButtonSelected = TYPE_BUGREPORT;
+                setupperpanestate();
+                setlowerpanecontents();
             } else {
                 // should never get this, if the button-group is working
                 System.out.println("jBugReportsRadioButtonActionPerformed: deselected now");                    
@@ -402,9 +548,114 @@ public class CellDialog extends javax.swing.JPanel {
     private void jAppPagesRadioButtonStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jAppPagesRadioButtonStateChanged
     }//GEN-LAST:event_jAppPagesRadioButtonStateChanged
 
+    private void setupperpanestate() {
+        switch (cButtonSelected) {
+            case TYPE_APPPAGE:
+                jAppPagesComboBox.setEnabled(true);
+                jDocsComboBox.setEnabled(false);
+                jToolsComboBox.setEnabled(false);
+                jBugReportsComboBox.setEnabled(false);
+                break;
+            case TYPE_DOC:
+                jAppPagesComboBox.setEnabled(false);
+                jDocsComboBox.setEnabled(true);
+                jToolsComboBox.setEnabled(false);
+                jBugReportsComboBox.setEnabled(false);
+                break;
+            case TYPE_TOOL:
+                jAppPagesComboBox.setEnabled(false);
+                jDocsComboBox.setEnabled(false);
+                jToolsComboBox.setEnabled(true);
+                jBugReportsComboBox.setEnabled(false);
+                break;
+            case TYPE_BUGREPORT:
+                jAppPagesComboBox.setEnabled(false);
+                jDocsComboBox.setEnabled(false);
+                jToolsComboBox.setEnabled(false);
+                jBugReportsComboBox.setEnabled(true);
+                break;
+        }
+    }
+
+    private void setlowerpanecontents() {
+        CellPath cp = null;
+        switch (cButtonSelected) {
+            case TYPE_APPPAGE:
+                jCellPathTypeLabel.setText("App Page");
+                cp = this.cp.cellpaths.get(this.AppPageIndexes.get(ncurrentselected_apppages_combobox));
+                break;
+            case TYPE_DOC:
+                jCellPathTypeLabel.setText("Document");
+                cp = this.cp.cellpaths.get(this.DocIndexes.get(ncurrentselected_apppages_combobox));
+                break;
+            case TYPE_TOOL:
+                jCellPathTypeLabel.setText("Tool");
+                cp = this.cp.cellpaths.get(this.ToolIndexes.get(ncurrentselected_apppages_combobox));
+                break;
+            case TYPE_BUGREPORT:
+                jCellPathTypeLabel.setText("Bug Report");
+                cp = this.cp.cellpaths.get(this.BugReportIndexes.get(ncurrentselected_apppages_combobox));
+                break;
+        }
+        jNameTextField.setText(cp.pathname);
+    }
+    
+    private void setpathtypescomboboxcontents() {
+        System.out.println("setpathtypescomboboxcontents: called");
+        String[] names = new String[40];
+        int i = 0;
+        names[i++] = Database.PATHTYPENAME_NONE;
+        names[i++] = Database.PATHTYPENAME_EXECUTABLE;
+        names[i++] = Database.PATHTYPENAME_OSOPEN;
+        jPathTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(names));
+    }               
+    
+    private void setchoosetoolcomboboxcontents() {
+        System.out.println("setchoosetoolcomboboxcontents: called");
+        String[] names = new String[40];
+        int i = 0;
+        for(Tool tool : MatrixDashboardUI.mdui.tools) {
+            names[i++] = tool.name;
+        }
+        jChooseToolComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(names));
+    }               
+
+    private void jSaveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jSaveButtonActionPerformed
+        System.out.println("jSaveButtonActionPerformed: called");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jSaveButtonActionPerformed
+
+    private void jCloseCellButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCloseCellButton1ActionPerformed
+        System.out.println("jCloseCellButton1ActionPerformed: called");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCloseCellButton1ActionPerformed
+
+    private void jDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDeleteButtonActionPerformed
+        System.out.println("jDeleteButtonActionPerformed: called");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jDeleteButtonActionPerformed
+
+    private void jRunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRunButtonActionPerformed
+        System.out.println("jRunButtonActionPerformed: called");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jRunButtonActionPerformed
+
+    private void jCancelButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCancelButtonActionPerformed
+        System.out.println("jCancelButtonActionPerformed: called");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jCancelButtonActionPerformed
+
+    private void jNewButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jNewButtonActionPerformed
+        System.out.println("jNewButtonActionPerformed: called");
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jNewButtonActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.ButtonGroup buttonGroup3;
+    private javax.swing.ButtonGroup buttonGroup4;
     private javax.swing.JComboBox<String> jAppPagesComboBox;
     private javax.swing.JLabel jAppPagesLabel;
     private javax.swing.JRadioButton jAppPagesRadioButton;
@@ -424,6 +675,7 @@ public class CellDialog extends javax.swing.JPanel {
     private javax.swing.JLabel jDocsLabel;
     private javax.swing.JRadioButton jDocsRadioButton;
     private javax.swing.JTextField jNameTextField;
+    private javax.swing.JButton jNewButton;
     private javax.swing.JLabel jPathLabel;
     private javax.swing.JTextField jPathTextField;
     private javax.swing.JComboBox<String> jPathTypeComboBox;

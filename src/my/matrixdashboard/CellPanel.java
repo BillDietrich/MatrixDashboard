@@ -5,6 +5,8 @@
  */
 package my.matrixdashboard;
 
+import java.util.*;
+
 /**
  *
  * @author user1
@@ -12,6 +14,8 @@ package my.matrixdashboard;
 public class CellPanel extends javax.swing.JPanel {
 
     MDCell c = null;
+    public ArrayList<CellPath> cellpaths;
+
 
     /**
      * Creates new form CellPanel
@@ -19,7 +23,8 @@ public class CellPanel extends javax.swing.JPanel {
     public CellPanel(MDCell c) {
         initComponents();
         System.out.println("CellPanel.constructor: called, c.id == " + c.id + ", c.projectid == " + c.projectid + ", c.appfuncid == " + c.appfuncid + ", c.activityid == " + c.activityid);        
-       this.c = c;
+        this.c = c;
+        this.cellpaths = CellPath.getallcellpaths(c.id);
         jLabel1.setText("cell" + c.id);
     }
 

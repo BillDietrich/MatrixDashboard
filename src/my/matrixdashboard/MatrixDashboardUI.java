@@ -35,6 +35,8 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     ArrayList<ActivityPanel> activitypanels;    // for current project
     // tricky: cellpanels has one less column than the table has
     ArrayList<ArrayList<CellPanel>> cellpanels;    // for current project
+
+    ArrayList<Tool> tools;
     
     /**
      * Creates new form MatrixDashboardUI
@@ -204,7 +206,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         for (int i=0 ; i<projects.size() ; i++) {
             if (projects.get(i).name.equals(selected)) {
                 if (i != ncurrentproject)
-                changeselectedproject(i);
+                    changeselectedproject(i);
                 return;
             }
         }
@@ -500,7 +502,12 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         */
 
         Tool t = null;
-        int nexttid = 1;
+        int nexttid = Database.NONEID;
+        t = new Tool(nexttid++, " ", Database.PATHTYPE_EXECUTABLE, " ");
+        try{
+            t.writetodatabase();
+        }catch(Exception e) {
+        };
         t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTABLE, "some1pathhere");
         try{
             t.writetodatabase();
@@ -542,12 +549,12 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             cp.writetodatabase();
         }catch(Exception e) {
         };
-        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool1", Database.PATHTYPE_OSOPEN, "some4path", 1, "");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool2", Database.PATHTYPE_OSOPEN, "some4path", 2, "");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
         };
-        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool1", Database.PATHTYPE_OSOPEN, "some4path", 2, "");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool3", Database.PATHTYPE_EXECUTABLE, "some4path", 3, "");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
@@ -776,6 +783,11 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         };
         setprojectscomboboxcontents();
         changeselectedproject(0);
+
+        try{
+            this.tools = Tool.getalltools();
+        }catch(Exception e) {
+        };
     }
 
     private void stop(){

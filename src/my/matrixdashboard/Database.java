@@ -19,8 +19,13 @@ public class Database {
    public static final String NONENAME = "---none---";
    public static final String NONEABBREV = "-";
    
+   public static final String PATHTYPE_NONE = "N";
    public static final String PATHTYPE_EXECUTABLE = "X";
    public static final String PATHTYPE_OSOPEN = "O";
+   
+   public static final String PATHTYPENAME_NONE = " ";
+   public static final String PATHTYPENAME_EXECUTABLE = "Executable";
+   public static final String PATHTYPENAME_OSOPEN = "Openable";
    
    
    public void open() {

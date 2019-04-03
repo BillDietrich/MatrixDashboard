@@ -26,8 +26,8 @@ public class CellPath {
 
    public static final String CELLPATHTYPE_APPPAGE = "A";
    public static final String CELLPATHTYPE_DOC = "D";
-   public static final String CELLPATHTYPE_BUGREPORT = "B";
    public static final String CELLPATHTYPE_TOOL = "T";
+   public static final String CELLPATHTYPE_BUGREPORT = "B";
 
    
    // constructors
