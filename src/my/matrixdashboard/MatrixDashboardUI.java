@@ -503,17 +503,27 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
 
         Tool t = null;
         int nexttid = Database.NONEID;
-        t = new Tool(nexttid++, " ", Database.PATHTYPE_EXECUTABLE, " ");
+        t = new Tool(nexttid++, " ", Database.PATHTYPE_EXECUTE, " ");
         try{
             t.writetodatabase();
         }catch(Exception e) {
         };
-        t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTABLE, "some1pathhere");
+        t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTE, "burppathhere");
         try{
             t.writetodatabase();
         }catch(Exception e) {
         };
-        t = new Tool(nexttid++, "ZAP", Database.PATHTYPE_EXECUTABLE, "some2pathhere");
+        t = new Tool(nexttid++, "ZAP", Database.PATHTYPE_EXECUTE, "zappathhere");
+        try{
+            t.writetodatabase();
+        }catch(Exception e) {
+        };
+        t = new Tool(nexttid++, "Terminal (CLI)", Database.PATHTYPE_EXECUTE, "/usr/bin/gnome-terminal");
+        try{
+            t.writetodatabase();
+        }catch(Exception e) {
+        };
+        t = new Tool(nexttid++, "Xed", Database.PATHTYPE_EXECUTE, "/usr/bin/xed");
         try{
             t.writetodatabase();
         }catch(Exception e) {
@@ -534,27 +544,27 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
 
         CellPath cp = null;
         int nextcpid = 1;
-        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_APPPAGE, "Login page", Database.PATHTYPE_OSOPEN, "some3path", Database.NONEID, "");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_APPPAGE, "Login page", Database.PATHTYPE_BROWSEURL, "http://localhost/login", Database.NONEID, "?arg1=23");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
         };
-        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_DOC, "User manual", Database.PATHTYPE_OSOPEN, "some4path", Database.NONEID, "");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_DOC, "User manual", Database.PATHTYPE_BROWSEURL, "http://localhost/usermanual", Database.NONEID, "?arg1=24");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
         };
-        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_BUGREPORT, "Bug1", Database.PATHTYPE_OSOPEN, "some4path", Database.NONEID, "");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_BUGREPORT, "Bug1", Database.PATHTYPE_OPENFILE, "README.md", Database.NONEID, "");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
         };
-        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool2", Database.PATHTYPE_OSOPEN, "some4path", 2, "");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "CLI", Database.PATHTYPE_EXECUTE, "", 4, "");
         try{
             cp.writetodatabase();
         }catch(Exception e) {
         };
-        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Tool3", Database.PATHTYPE_EXECUTABLE, "some4path", 3, "");
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Xed newfile.txt", Database.PATHTYPE_EXECUTE, "", 5, "newfile.txt");
         try{
             cp.writetodatabase();
         }catch(Exception e) {

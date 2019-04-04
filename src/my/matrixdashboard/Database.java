@@ -20,12 +20,28 @@ public class Database {
    public static final String NONEABBREV = "-";
    
    public static final String PATHTYPE_NONE = "N";
-   public static final String PATHTYPE_EXECUTABLE = "X";
-   public static final String PATHTYPE_OSOPEN = "O";
+   public static final String PATHTYPE_EXECUTE = "X";
+   public static final String PATHTYPE_BROWSEURL = "B";
+   public static final String PATHTYPE_EDITFILE = "E";
+   public static final String PATHTYPE_OPENFILE = "O";
    
    public static final String PATHTYPENAME_NONE = " ";
-   public static final String PATHTYPENAME_EXECUTABLE = "Executable";
-   public static final String PATHTYPENAME_OSOPEN = "Openable";
+   public static final String PATHTYPENAME_EXECUTE = "Execute";
+   public static final String PATHTYPENAME_BROWSEURL = "Browse URL";
+   public static final String PATHTYPENAME_EDITFILE = "Edit File";
+   public static final String PATHTYPENAME_OPENFILE = "Open File";
+   
+   static int pathtypeLetterToIndex(String c) {
+      switch (c) {
+          case PATHTYPE_NONE: return 0;
+          case PATHTYPE_EXECUTE: return 1;
+          case PATHTYPE_BROWSEURL: return 2;
+          case PATHTYPE_EDITFILE: return 3;
+          case PATHTYPE_OPENFILE: return 4;
+          default: return 99;
+      }
+   }
+
    
    
    public void open() {

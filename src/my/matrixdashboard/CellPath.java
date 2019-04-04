@@ -24,11 +24,6 @@ public class CellPath {
    int toolid;
    String args;         // for launching a tool
 
-   public static final String CELLPATHTYPE_APPPAGE = "A";
-   public static final String CELLPATHTYPE_DOC = "D";
-   public static final String CELLPATHTYPE_TOOL = "T";
-   public static final String CELLPATHTYPE_BUGREPORT = "B";
-
    
    // constructors
    public CellPath(int id, int cellid, String cellpathtype, String pathname, String pathtype, String path, int toolid, String args) {
@@ -153,6 +148,23 @@ public class CellPath {
     }finally{
        System.out.println("CellPath.readfromdatabase: finished");        
     }
+   }
+
+   public static final String CELLPATHTYPE_NONE = " ";
+   public static final String CELLPATHTYPE_APPPAGE = "A";
+   public static final String CELLPATHTYPE_DOC = "D";
+   public static final String CELLPATHTYPE_TOOL = "T";
+   public static final String CELLPATHTYPE_BUGREPORT = "B";
+   
+   int cellpathtypeLetterToIndex(String c) {
+      switch (c) {
+          case CELLPATHTYPE_NONE: return 0;
+          case CELLPATHTYPE_APPPAGE: return 1;
+          case CELLPATHTYPE_DOC: return 2;
+          case CELLPATHTYPE_TOOL: return 3;
+          case CELLPATHTYPE_BUGREPORT: return 4;
+          default: return 99;
+      }
    }
 
 }
