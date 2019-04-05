@@ -12,6 +12,12 @@ import java.awt.event.*;
 import java.net.URI;
 import java.io.*;
 
+// for OWASP ZAP
+import java.nio.charset.StandardCharsets;
+import org.zaproxy.clientapi.core.ApiResponse;
+import org.zaproxy.clientapi.core.ApiResponseElement;
+import org.zaproxy.clientapi.core.ClientApi;
+
 /**
  *
  * @author user1
@@ -730,6 +736,7 @@ public class CellDialog extends javax.swing.JPanel {
         names[i++] = Database.PATHTYPENAME_BROWSEURL;
         names[i++] = Database.PATHTYPENAME_EDITFILE;
         names[i++] = Database.PATHTYPENAME_OPENFILE;
+        names[i++] = Database.PATHTYPENAME_OWASPZAP;
         jPathTypeComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(names));
     }               
     
@@ -758,6 +765,7 @@ public class CellDialog extends javax.swing.JPanel {
     private void jDeleteButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDeleteButtonActionPerformed
         System.out.println("jDeleteButtonActionPerformed: called");
         // TODO add your handling code here:
+        JOptionPane.showMessageDialog(f, "A basic JOptionPane message dialog");
         bLowerPaneEditable = false;
         setlowerpanestate();
     }//GEN-LAST:event_jDeleteButtonActionPerformed
@@ -765,6 +773,8 @@ public class CellDialog extends javax.swing.JPanel {
     private void jRunButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRunButtonActionPerformed
         System.out.println("jRunButtonActionPerformed: called, cButtonSelected == " + cButtonSelected);
         String sPathText = null;
+        String sPort = null;
+        String sAPIkey = null;
         String sArgs = null;
         File file = null;
         int npathtypeindex = 0;
@@ -776,6 +786,8 @@ public class CellDialog extends javax.swing.JPanel {
                     npathtypeindex = Database.pathtypeLetterToIndex(tool.pathtype);
                     sPathText = tool.path;
                     System.out.println("jRunButtonActionPerformed: sPathText '" + sPathText + "'");
+                    sPort = tool.port;
+                    sAPIkey = tool.APIkey;
                 }
             sArgs = jArgsTextField.getText();
         } else {
@@ -849,6 +861,28 @@ public class CellDialog extends javax.swing.JPanel {
                 }catch(Exception e) {
                     System.out.println("jRunButtonActionPerformed: open exception" + e);
                 };
+                break;
+            case 5:     // PATHTYPENAME_OWASPZAP
+                System.out.println("jRunButtonActionPerformed: PATHTYPENAME_OWASPZAP");
+                // https://github.com/zaproxy/zap-api-java
+                ClientApi api = null;
+                Integer nport = Integer.parseInt(sPort);
+                try{
+                    if (sAPIkey == " ")
+                        api = new ClientApi(sPathText, nport);
+                    else
+                        api = new ClientApi(sPathText, nport, sAPIkey);
+                }catch(Exception e) {
+                    System.out.println("jRunButtonActionPerformed: ZAP ClientApi exception" + e);
+                };
+                // do something !!!
+                String sReport = null;
+                try{
+                    sReport = new String(api.core.xmlreport(), StandardCharsets.UTF_8);
+                }catch(Exception e) {
+                    System.out.println("jRunButtonActionPerformed: ZAP xmlreport exception" + e);
+                };
+                System.out.println("jRunButtonActionPerformed: sReport == " + sReport);
                 break;
         }
     }//GEN-LAST:event_jRunButtonActionPerformed

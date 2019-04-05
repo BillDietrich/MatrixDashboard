@@ -503,27 +503,31 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
 
         Tool t = null;
         int nexttid = Database.NONEID;
-        t = new Tool(nexttid++, " ", Database.PATHTYPE_EXECUTE, " ");
+        t = new Tool(nexttid++, " ", Database.PATHTYPE_NONE, " ", " ", " ");
         try{
             t.writetodatabase();
         }catch(Exception e) {
         };
-        t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTE, "burppathhere");
+        // java -jar -Xmx2G /path/to/burp.jar   (assign 2 GB memory to Burp)
+        // or
+        // /path/to/burp.jar
+        // https://github.com/vmware/burp-rest-api
+        t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTE, "burppathhere", " ", " ");
         try{
             t.writetodatabase();
         }catch(Exception e) {
         };
-        t = new Tool(nexttid++, "ZAP", Database.PATHTYPE_EXECUTE, "zappathhere");
+        t = new Tool(nexttid++, "ZAP", Database.PATHTYPE_OWASPZAP, "http://localhost", "8090", " ");
         try{
             t.writetodatabase();
         }catch(Exception e) {
         };
-        t = new Tool(nexttid++, "Terminal (CLI)", Database.PATHTYPE_EXECUTE, "/usr/bin/gnome-terminal");
+        t = new Tool(nexttid++, "Terminal (CLI)", Database.PATHTYPE_EXECUTE, "/usr/bin/gnome-terminal", " ", " ");
         try{
             t.writetodatabase();
         }catch(Exception e) {
         };
-        t = new Tool(nexttid++, "Xed", Database.PATHTYPE_EXECUTE, "/usr/bin/xed");
+        t = new Tool(nexttid++, "Xed", Database.PATHTYPE_EXECUTE, "/usr/bin/xed", " ", " ");
         try{
             t.writetodatabase();
         }catch(Exception e) {
@@ -555,6 +559,16 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }catch(Exception e) {
         };
         cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_BUGREPORT, "Bug1", Database.PATHTYPE_OPENFILE, "README.md", Database.NONEID, "");
+        try{
+            cp.writetodatabase();
+        }catch(Exception e) {
+        };
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "Burp", Database.PATHTYPE_EXECUTE, "", 2, "");
+        try{
+            cp.writetodatabase();
+        }catch(Exception e) {
+        };
+        cp = new CellPath(nextcpid++, 1, CellPath.CELLPATHTYPE_TOOL, "ZAP", Database.PATHTYPE_OWASPZAP, "", 3, "");
         try{
             cp.writetodatabase();
         }catch(Exception e) {

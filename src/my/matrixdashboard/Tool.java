@@ -18,20 +18,26 @@ public class Tool {
    int id;
    String name;         // set by user
    String pathtype;     // Database.PATHTYPE_*
-   String path;         // URL or local OS file path
+   String path;         // URL or local OS file path, for launching or for talking to running app
+   String port;         // URL port number
+   String APIkey;
 
    // constructors
-   public Tool(int id, String name, String pathtype, String path) {
+   public Tool(int id, String name, String pathtype, String path, String port, String APIkey) {
        this.id = id;
        this.name = name;
        this.pathtype = pathtype;
        this.path = path;
+       this.port = port;
+       this.APIkey = APIkey;
    }
    public Tool(int id) {
        this.id = id;
        this.name = null;
        this.pathtype = null;
        this.path = null;
+       this.port = null;
+       this.APIkey = null;
    }
    
    public static void createtable() {
@@ -44,6 +50,8 @@ public class Tool {
                    " name TEXT UNIQUE, " + 
                    " pathtype TEXT, " + 
                    " path TEXT, " + 
+                   " port TEXT, " + 
+                   " APIkey TEXT, " + 
                    " PRIMARY KEY ( id ))";
 
       stmt.executeUpdate(sql);
@@ -69,12 +77,14 @@ public class Tool {
       ResultSet rs = stmt.executeQuery(sql);
       
       while(rs.next()){
-         int id = rs.getInt("id");
-         String name = rs.getString("name");
-         String pathtype = rs.getString("pathtype");
-         String path = rs.getString("path");
-         Tool t = new Tool(id,name,pathtype,path);
-         thelist.add(t);
+        int id = rs.getInt("id");
+        String name = rs.getString("name");
+        String pathtype = rs.getString("pathtype");
+        String path = rs.getString("path");
+        String port = rs.getString("port");
+        String APIkey = rs.getString("APIkey");
+        Tool t = new Tool(id,name,pathtype,path,port,APIkey);
+        thelist.add(t);
         System.out.println("Tool.getalltools: got id == " + id + ", name '" + name + "'");
       }
       rs.close();
@@ -92,7 +102,7 @@ public class Tool {
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
-      String sql = "INSERT OR REPLACE INTO tools VALUES(" + id + ",'" + name + "','" + pathtype + "','" + path + "')";
+      String sql = "INSERT OR REPLACE INTO tools VALUES(" + id + ",'" + name + "','" + pathtype + "','" + path + "'," + port + ",'" + APIkey + "')";
       // write fails silently if name violates the UNIQUE constraint !!!
       stmt.executeUpdate(sql);
     }catch(Exception e){
@@ -111,10 +121,12 @@ public class Tool {
       stmt.executeQuery(sql);
       ResultSet rs = stmt.executeQuery(sql);
       if (rs.next()){
-         this.id = rs.getInt("id");
-         this.name = rs.getString("name");
-         this.pathtype = rs.getString("pathtype");
-         this.path = rs.getString("path");
+        this.id = rs.getInt("id");
+        this.name = rs.getString("name");
+        this.pathtype = rs.getString("pathtype");
+        this.path = rs.getString("path");
+        this.port = rs.getString("port");
+        this.APIkey = rs.getString("APIkey");
         System.out.println("Tool.readfromdatabase: got id == " + this.id + ", name '" + this.name + "'");
       } else
        System.out.println("Tool.readfromdatabase: record not found");
