@@ -10,6 +10,11 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.table.*;
+import java.awt.Toolkit;
+import java.awt.image.BufferedImage;
+import java.net.*;
+import java.io.*;
+import javax.imageio.ImageIO;
 
 
 /**
@@ -42,9 +47,31 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
      * Creates new form MatrixDashboardUI
      */
     public MatrixDashboardUI() {
+        URL u = null;
+        Image i = null;
+        ArrayList<Image> images = new ArrayList<Image>();
+
+        System.out.println("MatrixDashboardUI.constructor: called");
+        
+        u = MatrixDashboardUI.class.getResource("mdicon16x16.jpg");
+        i = Toolkit.getDefaultToolkit().getImage(u);
+        images.add(i);
+        u = MatrixDashboardUI.class.getResource("mdicon32x32.jpg");
+        i = Toolkit.getDefaultToolkit().getImage(u);
+        images.add(i);
+        u = MatrixDashboardUI.class.getResource("mdicon64x64.jpg");
+        i = Toolkit.getDefaultToolkit().getImage(u);
+        images.add(i);
+        u = MatrixDashboardUI.class.getResource("mdicon128x128.jpg");
+        i = Toolkit.getDefaultToolkit().getImage(u);
+        images.add(i);
+        setIconImages(images);
+
         //setExtendedState(MAXIMIZED_BOTH);
         setMinimumSize(new Dimension(600,300));
         setPreferredSize(new Dimension(1000,600));
+        setTitle("Matrix-Dashboard");
+        
         initComponents();
     }
 

@@ -55,6 +55,7 @@ public class CellDialog extends javax.swing.JPanel {
         this.cpanel = cpanel;
         
         initComponents();
+        //f.setTitle("Cell");
         buttonGroup1.add(jAppPagesRadioButton);
         buttonGroup1.add(jBugReportsRadioButton);
         buttonGroup1.add(jDocsRadioButton);

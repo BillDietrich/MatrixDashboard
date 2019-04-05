@@ -47,6 +47,7 @@ public class CellPathDialog extends javax.swing.JPanel {
         this.cpath = cpath;
         
         initComponents();
+        //f.setTitle(cpath.pathname);
         
         setpathtypescomboboxcontents();
         setchoosetoolcomboboxcontents();
