@@ -102,7 +102,7 @@ public class Tool {
     Statement stmt = null;
     try{
       stmt = Database.conn.createStatement();
-      String sql = "INSERT OR REPLACE INTO tools VALUES(" + id + ",'" + name + "','" + pathtype + "','" + path + "'," + port + ",'" + APIkey + "')";
+      String sql = "INSERT OR REPLACE INTO tools VALUES(" + id + ",'" + name + "','" + pathtype + "','" + path + "','" + port + "','" + APIkey + "')";
       // write fails silently if name violates the UNIQUE constraint !!!
       stmt.executeUpdate(sql);
     }catch(Exception e){

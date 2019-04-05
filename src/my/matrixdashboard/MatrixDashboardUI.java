@@ -506,7 +506,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         t = new Tool(nexttid++, " ", Database.PATHTYPE_NONE, " ", " ", " ");
         try{
             t.writetodatabase();
-        }catch(Exception e) {
+        }catch(Exception e) { 
         };
         // java -jar -Xmx2G /path/to/burp.jar   (assign 2 GB memory to Burp)
         // or

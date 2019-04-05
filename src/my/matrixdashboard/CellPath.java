@@ -155,8 +155,14 @@ public class CellPath {
    public static final String CELLPATHTYPE_DOC = "D";
    public static final String CELLPATHTYPE_TOOL = "T";
    public static final String CELLPATHTYPE_BUGREPORT = "B";
+
+   public static final char CELLPATHTYPEC_NONE = ' ';
+   public static final char CELLPATHTYPEC_APPPAGE = 'A';
+   public static final char CELLPATHTYPEC_DOC = 'D';
+   public static final char CELLPATHTYPEC_TOOL = 'T';
+   public static final char CELLPATHTYPEC_BUGREPORT = 'B';
    
-   int cellpathtypeLetterToIndex(String c) {
+   static int cellpathtypeLetterToIndex(String c) {
       switch (c) {
           case CELLPATHTYPE_NONE: return 0;
           case CELLPATHTYPE_APPPAGE: return 1;
@@ -164,6 +170,17 @@ public class CellPath {
           case CELLPATHTYPE_TOOL: return 3;
           case CELLPATHTYPE_BUGREPORT: return 4;
           default: return 99;
+      }
+   }
+   
+   static String cellpathtypeIndexToString(int i) {
+      switch (i) {
+          case 0: return CELLPATHTYPE_NONE;
+          case 1: return CELLPATHTYPE_APPPAGE;
+          case 2: return CELLPATHTYPE_DOC;
+          case 3: return CELLPATHTYPE_TOOL;
+          case 4: return CELLPATHTYPE_BUGREPORT;
+          default: return "q";
       }
    }
 
