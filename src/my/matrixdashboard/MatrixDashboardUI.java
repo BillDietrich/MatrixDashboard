@@ -1,7 +1,9 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/* 
+ * Copyright <2019> <Bill Dietrich>
+ * 
+ * Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby granted, provided that the above copyright notice and this permission notice appear in all copies.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 package my.matrixdashboard;
 
@@ -17,10 +19,7 @@ import java.io.*;
 import javax.imageio.ImageIO;
 
 
-/**
- *
- * @author user1
- */
+
 public class MatrixDashboardUI extends javax.swing.JFrame {
 
     static MatrixDashboardUI mdui;
@@ -93,6 +92,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jMainTable1 = new javax.swing.JTable();
         jProjectsComboBox1 = new javax.swing.JComboBox<>();
+        jConfigureButton = new javax.swing.JButton();
 
         jActivityPropertiesMenuItem1.setText("Properties");
         jActivityPropertiesMenuItem1.setComponentPopupMenu(jActivityPopupMenu1);
@@ -173,6 +173,13 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             }
         });
 
+        jConfigureButton.setText("Configure");
+        jConfigureButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jConfigureButtonActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -184,19 +191,22 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(jProjectsComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
+                .addGap(123, 123, 123)
                 .addComponent(jAppAreasComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jConfigureButton)
+                .addGap(121, 121, 121))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jAppAreasComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jProjectsComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jProjectsComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jConfigureButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 9, Short.MAX_VALUE))
+                .addGap(0, 5, Short.MAX_VALUE))
         );
 
         pack();
@@ -239,6 +249,15 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         }
         System.out.println("jProjectsComboBox1ActionPerformed: combobox selected project not in list");
     }//GEN-LAST:event_jProjectsComboBox1ActionPerformed
+
+    private void jConfigureButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConfigureButtonActionPerformed
+        JDialog dialog = new JDialog(MatrixDashboardUI.mdui, "Configure", true);
+        ConfigureDialog cd = new ConfigureDialog(MatrixDashboardUI.mdui, dialog);
+        dialog.getContentPane().add(cd);
+        dialog.pack();
+        dialog.setLocationRelativeTo(null);
+        dialog.setVisible(true);
+    }//GEN-LAST:event_jConfigureButtonActionPerformed
 
     private void jActivityPanelMouseClicked(java.awt.event.MouseEvent evt) {
         System.out.println("jActivityPanelMouseClicked: should never happen");
@@ -539,11 +558,27 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
         // or
         // /path/to/burp.jar
         // https://github.com/vmware/burp-rest-api
-        t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTE, "burppathhere", " ", " ");
+/*
+Usage:
+--help                        Print this message
+--version                     Print version details
+--disable-extensions          Prevent loading of extensions on startup
+--diagnostics                 Print diagnostic information
+--use-defaults                Start with default settings
+--collaborator-server         Run in Collaborator server mode
+--collaborator-config         Specify Collaborator server configuration file; defaults to collaborator.config
+--project-file                Open the specified project file; this will be created as a new project if the file does not exist
+--config-file                 Load the specified project configuration file(s); this option may be repeated to load multiple files
+--user-config-file            Load the specified user configuration file(s); this option may be repeated to load multiple files
+--auto-repair                 Automatically repair a corrupted project file specified by the --project-file option
+--unpause-spider-and-scanner  Do not pause the Spider and Scanner when opening an existing project
+*/
+        t = new Tool(nexttid++, "Burp", Database.PATHTYPE_EXECUTE, "/usr/local/bin/BurpSuiteCommunity", " ", " ");
         try{
             t.writetodatabase();
         }catch(Exception e) {
         };
+        // https://github.com/zaproxy/zap-core-help/wiki/HelpCmdline
         t = new Tool(nexttid++, "ZAP", Database.PATHTYPE_OWASPZAP, "http://localhost", "8090", " ");
         try{
             t.writetodatabase();
@@ -943,6 +978,7 @@ public class MatrixDashboardUI extends javax.swing.JFrame {
     private javax.swing.JMenuItem jActivityPropertiesMenuItem1;
     private javax.swing.JComboBox<String> jAppAreasComboBox1;
     private javax.swing.JMenuItem jCloneActivityMenuItem2;
+    private javax.swing.JButton jConfigureButton;
     private javax.swing.JTable jMainTable1;
     private javax.swing.JMenuItem jNewActivityMenuItem3;
     private javax.swing.JComboBox<String> jProjectsComboBox1;
